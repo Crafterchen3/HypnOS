@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="HypnOS:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/HypnOS_jar</output-path>
+    <root id="archive" name="HypnOS.jar">
+      <element id="module-output" name="HypnOS" />
+      <element id="module-source" name="HypnOS" />
+    </root>
+  </artifact>
+</component>
