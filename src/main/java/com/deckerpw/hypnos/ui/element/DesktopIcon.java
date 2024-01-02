@@ -3,30 +3,42 @@ package com.deckerpw.hypnos.ui.element;
 import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.IGraphics;
+import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
 
 public class DesktopIcon extends Element {
 
     public final BufferedImage[] icons;
+    public final String id;
     public int state = 0;
     public boolean dragging = false;
     public boolean active = false;
     public Runnable action;
 
-    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons, Runnable action) {
-        this(x, y, width, height, icons, action, 0);
+    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons, Runnable action, String id) {
+        this(x, y, width, height, icons, action, 0, id);
     }
 
-    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons) {
-        this(x, y, width, height, icons, null, 0);
+    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons, String id) {
+        this(x, y, width, height, icons, null, 0, id);
     }
 
-    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons, Runnable action, int state) {
+    public DesktopIcon(int x, int y, int width, int height, BufferedImage[] icons, Runnable action, int state, String id) {
         super(x, y, width, height);
         this.icons = icons;
         this.state = state;
         this.action = action;
+        this.id = id;
+    }
+
+    public void init() {
+        JSONObject desktop = HypnOS.settings.jsonObject.getJSONObject("desktop");
+        if (desktop.has(id)) {
+            JSONObject icon = desktop.getJSONObject(id);
+            this.x = icon.getInt("x");
+            this.y = icon.getInt("y");
+        }
     }
 
     public void setState(int state) {

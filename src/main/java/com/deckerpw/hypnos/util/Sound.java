@@ -7,12 +7,12 @@ import javax.sound.sampled.FloatControl;
 import java.net.URL;
 
 public class Sound {
-
-    private static float volume = 0.1f;
+    public final SoundGroup group;
     private final URL resource;
 
-    public Sound(URL resource) {
+    public Sound(URL resource, SoundGroup group) {
         this.resource = resource;
+        this.group = group;
         try {
 
         } catch (Exception e) {
@@ -20,24 +20,19 @@ public class Sound {
         }
     }
 
-    public static float getVolume() {
-        return volume;
-    }
-
-    public static void setVolume(float volume) {
-        Sound.volume = volume;
-    }
-
-    public void playSound() {
-        if (volume > 0) {
+    public void playSound(int volume) {
+        if (group.getVolume() > 0 || volume > 0) {
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(resource);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioIn);
                 //set Volume
                 FloatControl clipVolume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-                clipVolume.setValue(getVolume());
+                float setVolume = (group.getVolume() / 100f) * (volume / 100f);
+                float minVolume = clipVolume.getMinimum();
+                float maxVolume = clipVolume.getMaximum();
+                float gain = (maxVolume - minVolume) * setVolume + minVolume;
+                clipVolume.setValue(gain);
 
                 clip.start();
             } catch (Exception e) {
@@ -45,6 +40,26 @@ public class Sound {
             }
         }
 
+
+    }
+
+    public void playSound() {
+        playSound(100);
+    }
+
+    public enum SoundGroup {
+        MUSIC,
+        SFX;
+
+        int volume;
+
+        public int getVolume() {
+            return volume;
+        }
+
+        public void setVolume(int volume) {
+            this.volume = volume;
+        }
 
     }
 }

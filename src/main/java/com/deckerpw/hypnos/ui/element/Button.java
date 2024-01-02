@@ -30,6 +30,16 @@ public class Button extends Element implements Clickable {
     }
 
     @Override
+    public boolean mouseDragged(int mouseX, int mouseY) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int mouseX, int mouseY) {
+        return false;
+    }
+
+    @Override
     public void paint(IGraphics graphics) {
         graphics.drawImage(images[state], x, y, width, height);
     }

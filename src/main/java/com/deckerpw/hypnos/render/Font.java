@@ -44,7 +44,7 @@ public class Font {
         int py = row * 7;
         BufferedImage charImg = fontImage.getSubimage(px, py, w, 7);
         charImg = setImageColor(charImg, color);
-        g.drawImage(charImg, x, y, w, 8);
+        g.drawImage(charImg, x, y, w, 7);
     }
 
     public void drawString(String string, int x, int y, Color color, IGraphics g) {

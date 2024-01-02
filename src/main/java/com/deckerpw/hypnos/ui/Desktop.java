@@ -4,9 +4,10 @@ import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.ui.element.CursorElement;
+import com.deckerpw.hypnos.ui.element.Cursor;
 import com.deckerpw.hypnos.ui.element.DesktopIcon;
 import com.deckerpw.hypnos.util.Application;
+import org.json.JSONObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,7 +18,7 @@ public class Desktop {
     private final ArrayList<DesktopIcon> desktopIcons = new ArrayList<>();
     private final BufferedImage wallpaper = Registry.CITY_NIGHT;
     private final BufferedImage grid = Registry.GRID;
-    private final CursorElement cursor;
+    private final Cursor cursor;
     private final Font font = Registry.HYPNOFONT_0N;
     private DesktopIcon pressedIcon;
     private DesktopIcon selectedIcon;
@@ -25,7 +26,7 @@ public class Desktop {
     private int dragPointY;
     private DesktopIcon draggingIcon;
 
-    public Desktop(CursorElement cursor) {
+    public Desktop(Cursor cursor) {
         this.cursor = cursor;
         addDesktopIcon(Registry.EXPLORER);
         addDesktopIcon(Registry.DOWNLOAD_MANAGER);
@@ -37,7 +38,9 @@ public class Desktop {
         for (Application app : HypnOS.mods) {
             app.OnDesktopInit(this);
         }
-
+        for (DesktopIcon desktopIcon : desktopIcons) {
+            desktopIcon.init();
+        }
     }
 
     public void addDesktopIcon(DesktopIcon icon) {
@@ -98,6 +101,17 @@ public class Desktop {
         for (int i = desktopIcons.size() - 1; i >= 0; i--) {
             desktopIcons.get(i).paint(g);
         }
+    }
+
+    public JSONObject getIconConfig() {
+        JSONObject desktop = new JSONObject();
+        for (DesktopIcon desktopIcon : desktopIcons) {
+            JSONObject icon = new JSONObject();
+            icon.put("x", desktopIcon.x);
+            icon.put("y", desktopIcon.y);
+            desktop.put(desktopIcon.id, icon);
+        }
+        return desktop;
     }
 
 }

@@ -4,6 +4,7 @@
     <root id="archive" name="HypnOS.jar">
       <element id="module-output" name="HypnOS" />
       <element id="module-source" name="HypnOS" />
+      <element id="library" level="project" name="json-20231013" />
     </root>
   </artifact>
 </component>
