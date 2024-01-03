@@ -10,7 +10,7 @@ public class TextBox extends Element {
 
     private final Font font;
     private final Color color;
-    protected ArrayList<String> lines = new ArrayList<>();
+    public ArrayList<String> lines = new ArrayList<>();
 
     public TextBox(int x, int y, int width, String string, Font font, Color color) {
         super(x, y, width, 8);
@@ -21,7 +21,7 @@ public class TextBox extends Element {
 
     }
 
-    protected void genLines(String string) {
+    public void genLines(String string) {
         String line = "";
         for (char c : string.toCharArray()) {
             if (font.getLength(line + c) > width)

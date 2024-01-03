@@ -79,7 +79,7 @@ public class SettingsWindow extends TabWindow {
         }, font), 1);
         addElement(new TextButton(11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
             BufferedImage pane = win.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
-            File outputfile = new File(Paths.get(HypnOS.Path, "debugpane.png").toString());
+            File outputfile = new File(Paths.get(HypnOS.Path, "output.png").toString());
             try {
                 ImageIO.write(pane, "png", outputfile);
                 HypnOS.logger.println("Written image to: " + outputfile.getPath());

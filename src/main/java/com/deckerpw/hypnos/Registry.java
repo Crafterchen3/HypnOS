@@ -4,6 +4,7 @@ import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.swing.Screen;
 import com.deckerpw.hypnos.ui.element.Cursor;
 import com.deckerpw.hypnos.ui.element.DesktopIcon;
+import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.SettingsWindow;
 import com.deckerpw.hypnos.util.Sound;
 
@@ -35,6 +36,7 @@ public class Registry {
     //OS
     public static final BufferedImage WINDOW_PANE = getImage("/assets/textures/os/windowpane_306x164.png");
     public static final BufferedImage POPUP_PANE = getImage("/assets/textures/os/popuppane_225x72.png");
+    public static final BufferedImage LOG_PANE = getImage("/assets/textures/os/logpane.png");
     public static final Sound STARTUP = getSound("/assets/sounds/os/startup.wav", SFX);
     public static final BufferedImage POPUP_WINDOW = getImage("/assets/textures/os/popupwindow.png");
     public static final Sound ALERT_WINDOW = getSound("/assets/sounds/os/alert_window.wav", SFX);
@@ -94,13 +96,16 @@ public class Registry {
             getImage("/assets/textures/apps/settings1.png"),
             getImage("/assets/textures/apps/settings2.png"),
             getImage("/assets/textures/apps/settings3.png")}, () -> {
-        Screen panel = Screen.getInstance();
-        panel.addWindow(new SettingsWindow(panel, 50, 50, panel.cursor));
+        Screen screen = Screen.getInstance();
+        screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
     }, "SETTINGS");
     public static final DesktopIcon TUNEBOX = new DesktopIcon(0, 80, 32, 32, new BufferedImage[]{
             getImage("/assets/textures/apps/tunebox1.png"),
             getImage("/assets/textures/apps/tunebox2.png"),
-            getImage("/assets/textures/apps/tunebox3.png")}, "TUNEBOX");
+            getImage("/assets/textures/apps/tunebox3.png")}, () -> {
+        Screen screen = Screen.getInstance();
+        screen.addWindow(new LogWindow(screen, screen.cursor));
+    }, "TUNEBOX");
     //Images
     public static final BufferedImage WARNING = getImage("/assets/textures/images/warning.png");
 

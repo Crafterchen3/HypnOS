@@ -1,6 +1,7 @@
 package com.deckerpw.hypnos.util;
 
 import com.deckerpw.hypnos.HypnOS;
+import com.deckerpw.hypnos.ui.window.LogWindow;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class Logger {
 
     public final String ANSI_GREEN = "\u001B[32m";
     public final String ANSI_RESET = "\u001B[0m";
-    private final ArrayList<String> lines = new ArrayList<>();
+    public final ArrayList<String> lines = new ArrayList<>();
 
     public Logger() {
     }
@@ -27,6 +28,7 @@ public class Logger {
         String logMessage = "[" + formattedTime + "] " + string;
         lines.add(logMessage);
         System.out.println(coloredlogMessage);
+        if (LogWindow.getInstance() != null) LogWindow.getInstance().add(logMessage);
     }
 
     public void save(String filePath) {

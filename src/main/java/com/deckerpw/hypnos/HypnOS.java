@@ -5,6 +5,7 @@ import com.deckerpw.hypnos.swing.SwingWindow;
 import com.deckerpw.hypnos.util.Application;
 import com.deckerpw.hypnos.util.Logger;
 import com.deckerpw.hypnos.util.SizeableImage;
+import org.json.JSONException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +52,13 @@ public class HypnOS {
         createFolder(Paths.get(Path, "logs").toString());
         settings = new Settings();
         settings.load();
-        runClient();
+        try {
+            runClient();
+        }catch (JSONException e){
+            logger.println("JSONException thrown, resetting Settings...");
+            settings.loadDefaults();
+            runClient();
+        }
     }
 
     public static void exit() {
