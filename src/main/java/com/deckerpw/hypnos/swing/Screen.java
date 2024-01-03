@@ -4,21 +4,19 @@ import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.ui.Desktop;
 import com.deckerpw.hypnos.ui.element.Cursor;
+import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.Window;
 import com.deckerpw.hypnos.util.Sound;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Screen extends JPanel implements KeyListener {
 
     public static Screen instance;
-    public final Desktop desktop;
+    public Desktop desktop;
     private final com.deckerpw.hypnos.render.Font font = Registry.HYPNOFONT_0N;
     private final ArrayList<Window> windows = new ArrayList<>();
     public Cursor cursor; //TODO add Setting (that's why it's not final)
@@ -124,9 +122,26 @@ public class Screen extends JPanel implements KeyListener {
                 }
                 updateUI();
             }
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                float size = HypnOS.size;
+                mouseX = (int) Math.floor(e.getX() / size);
+                mouseY = (int) Math.floor(e.getY() / size);
+                for (Window window : windows) {
+                    int amount = e.getScrollAmount()/3*e.getWheelRotation();
+                    //HypnOS.logger.println(amount+"");
+                    if (window.isInside(mouseX, mouseY) && window.mouseWheelMoved(mouseX, mouseY, amount)) {
+                        updateUI();
+                        break;
+                    }
+                }
+            }
         };
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
+        addMouseWheelListener(adapter);
+        if (HypnOS.settings.jsonObject.getBoolean("autostart_log")) addWindow(new LogWindow(this,cursor));
     }
 
     public static Screen getInstance() {

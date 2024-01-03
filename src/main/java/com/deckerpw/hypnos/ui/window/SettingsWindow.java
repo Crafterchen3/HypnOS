@@ -6,6 +6,7 @@ import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.Settings;
 import com.deckerpw.hypnos.render.IGraphics;
 import com.deckerpw.hypnos.swing.Screen;
+import com.deckerpw.hypnos.ui.Desktop;
 import com.deckerpw.hypnos.ui.element.Checkbox;
 import com.deckerpw.hypnos.ui.element.Cursor;
 import com.deckerpw.hypnos.ui.element.*;
@@ -27,13 +28,12 @@ public class SettingsWindow extends TabWindow {
     private final SizeableImage win;
     private final EditBox width;
     private final EditBox height;
+    private final Checkbox autoLog;
 
-    public SettingsWindow(Screen panel, int x, int y, Cursor cursor) {
-        super(panel, Registry.WINDOW_PANE, x, y, 306, 164, cursor, "SETTINGS", Registry.SETTINGS_ICON, new String[]{
+    public SettingsWindow(Screen screen, int x, int y, Cursor cursor) {
+        super(screen, Registry.WINDOW_PANE, x, y, 306, 164, cursor, "SETTINGS", Registry.SETTINGS_ICON, new String[]{
                 "AUDIO",
-                "DISPLAY",
-                "CONTROLS",
-                "PIZZAZZ"
+                "DEBUG"
         });
         //(this.elements.add(new TextBox(7,25,width-14,
         //        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
@@ -56,7 +56,7 @@ public class SettingsWindow extends TabWindow {
         sfxVolume = new Slider(8, 60, "SOUND VOLUME", font, settings.jsonObject.getInt("sfx_volume"));
         addElement(sfxVolume);
         addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, () -> panel.removeWindow(SettingsWindow.this), font));
+        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, () -> screen.removeWindow(SettingsWindow.this), font));
         keyboardSFX = new Checkbox(282, 28, font, "KEY SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("keyboard_sfx"));
         addElement(keyboardSFX);
         mouseSFX = new Checkbox(282, 48, font, "MOUSE SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("mouse_sfx"));
@@ -68,14 +68,14 @@ public class SettingsWindow extends TabWindow {
         addElement(height, 1);
         addElement(new TextButton(11, 136, 47, 21, "OPEN", Registry.DEFAULT_BUTTON, () -> {
             BufferedImage pane = win.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
-            Window window = new Window(panel, pane, 20, 20, pane.getWidth(), pane.getHeight(), cursor, "TEST") {
+            Window window = new Window(screen, pane, 20, 20, pane.getWidth(), pane.getHeight(), cursor, "TEST") {
                 @Override
                 public void paint(IGraphics g) {
                     super.paint(g);
                     font.drawString("X: " + x + ", Y:" + y, x + 20, y + 20, Colors.TEXT_COLOR, g);
                 }
             };
-            panel.addWindow(window);
+            screen.addWindow(window);
         }, font), 1);
         addElement(new TextButton(11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
             BufferedImage pane = win.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
@@ -87,7 +87,10 @@ public class SettingsWindow extends TabWindow {
                 HypnOS.logger.println("Failed to write image to: " + outputfile.getPath());
             }
         }, font), 1);
-
+        autoLog = new Checkbox(282, 28, font, "AUTOSTART LOG", Registry.CHECKBOX, settings.jsonObject.getBoolean("autostart_log"));
+        addElement(autoLog,1);
+        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font),1);
+        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, () -> screen.removeWindow(SettingsWindow.this), font),1);
     }
 
     private void ApplySettings() {
@@ -97,6 +100,7 @@ public class SettingsWindow extends TabWindow {
         settings.updateVolume();
         settings.jsonObject.put("keyboard_sfx", keyboardSFX.getState());
         settings.jsonObject.put("mouse_sfx", mouseSFX.getState());
+        settings.jsonObject.put("autostart_log",autoLog.getState());
     }
 
 }

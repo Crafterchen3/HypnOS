@@ -57,6 +57,11 @@ public class EditBox extends Element implements Clickable, KeyListener {
     }
 
     @Override
+    public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
+        return false;
+    }
+
+    @Override
     public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == '\b' && !text.isEmpty())
             text = text.substring(0, text.length() - 1);

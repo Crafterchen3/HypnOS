@@ -8,4 +8,6 @@ public interface Clickable {
     boolean mouseDragged(int mouseX, int mouseY);
 
     boolean mouseMoved(int mouseX, int mouseY);
+
+    boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount);
 }

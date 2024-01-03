@@ -5,6 +5,7 @@ import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.IGraphics;
 import com.deckerpw.hypnos.swing.Screen;
 import com.deckerpw.hypnos.ui.element.Cursor;
+import com.deckerpw.hypnos.ui.element.ScrollTextBox;
 import com.deckerpw.hypnos.ui.element.TextBox;
 
 import java.awt.*;
@@ -19,10 +20,10 @@ public class LogWindow extends Window{
     static LogWindow instance;
     TextBox box;
 
-    public LogWindow(Screen panel, Cursor cursor) {
-        super(panel, Registry.LOG_PANE, 307, 5,170 ,260, cursor, "LOG");
+    public LogWindow(Screen screen, Cursor cursor) {
+        super(screen, Registry.LOG_PANE, 307, 5,170 ,260, cursor, "LOG");
         instance = this;
-        box = new TextBox(7,25,width-14,"Loading Log",font, Color.WHITE);
+        box = new ScrollTextBox(7,25,width-14,height-3,"Loading Log",font, Color.WHITE);
         box.lines.clear();
         for (String line : HypnOS.logger.lines) {
             box.genLines(line);

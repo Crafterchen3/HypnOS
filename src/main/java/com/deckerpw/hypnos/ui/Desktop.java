@@ -35,6 +35,8 @@ public class Desktop {
         addDesktopIcon(Registry.PETS);
         addDesktopIcon(Registry.SETTINGS);
         addDesktopIcon(Registry.TUNEBOX);
+        addDesktopIcon(Registry.LOG);
+        //addDesktopIcon(Registry.FILES);
         for (Application app : HypnOS.mods) {
             app.OnDesktopInit(this);
         }
@@ -97,7 +99,7 @@ public class Desktop {
         g.drawImage(wallpaper, 0, 0, 480, 270);
         if (draggingIcon != null)
             g.drawImage(grid, 0, 0, 480, 270);
-        font.drawString("HypnOS " + HypnOS.VERSION + " (a Java Desktop inspiered of HypnOS from Hypnospace Outlaw)", 2, 260, Color.black, g);
+        font.drawString("HypnOS " + HypnOS.VERSION + " (a Java Desktop inspiered of HypnOS from Hypnospace Outlaw)", 2, 260, Color.WHITE, g);
         for (int i = desktopIcons.size() - 1; i >= 0; i--) {
             desktopIcons.get(i).paint(g);
         }

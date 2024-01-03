@@ -7,6 +7,7 @@ import com.deckerpw.hypnos.ui.element.DesktopIcon;
 import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.SettingsWindow;
 import com.deckerpw.hypnos.util.Sound;
+import org.json.JSONException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -60,6 +61,9 @@ public class Registry {
     public static final Font HYPNOFONT_0N = new Font(getImage("/assets/textures/fonts/hypnofont0n.png"));
     //Wallpapers
     public static final BufferedImage CITY_NIGHT = getImage("/assets/textures/wallpapers/city_02.png");
+    public static final BufferedImage BLUE_RIDGES = getImage("/assets/textures/wallpapers/blue-ridges.png");
+    public static final BufferedImage GAME_BOARD = getImage("/assets/textures/wallpapers/game-board.png");
+    public static final BufferedImage GLEAM_SUNFLOWER = getImage("/assets/textures/wallpapers/gleam_sunflower.png");
     public static final BufferedImage GRID = getImage("/assets/textures/wallpapers/grid.png");
     //Cursors
     public static final Cursor CURSOR_DARK = new Cursor(new BufferedImage[]{
@@ -97,15 +101,29 @@ public class Registry {
             getImage("/assets/textures/apps/settings2.png"),
             getImage("/assets/textures/apps/settings3.png")}, () -> {
         Screen screen = Screen.getInstance();
-        screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
+        try {
+            screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
+        }catch (JSONException e){
+            HypnOS.logger.println("JSONException thrown, resetting Settings...");
+            HypnOS.settings.loadDefaults();
+            screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
+        }
     }, "SETTINGS");
     public static final DesktopIcon TUNEBOX = new DesktopIcon(0, 80, 32, 32, new BufferedImage[]{
             getImage("/assets/textures/apps/tunebox1.png"),
             getImage("/assets/textures/apps/tunebox2.png"),
-            getImage("/assets/textures/apps/tunebox3.png")}, () -> {
+            getImage("/assets/textures/apps/tunebox3.png")}, "TUNEBOX");
+    public static final DesktopIcon LOG = new DesktopIcon(0, 120, 32, 32, new BufferedImage[]{
+            getImage("/assets/textures/apps/log1.png"),
+            getImage("/assets/textures/apps/log2.png"),
+            getImage("/assets/textures/apps/log3.png")}, () -> {
         Screen screen = Screen.getInstance();
         screen.addWindow(new LogWindow(screen, screen.cursor));
-    }, "TUNEBOX");
+    }, "LOG");
+    public static final DesktopIcon FILES = new DesktopIcon(40, 120, 32, 32, new BufferedImage[]{
+            getImage("/assets/textures/apps/files1.png"),
+            getImage("/assets/textures/apps/files2.png"),
+            getImage("/assets/textures/apps/files3.png")}, "FILES");
     //Images
     public static final BufferedImage WARNING = getImage("/assets/textures/images/warning.png");
 

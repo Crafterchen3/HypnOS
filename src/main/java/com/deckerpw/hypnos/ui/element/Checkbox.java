@@ -51,6 +51,11 @@ public class Checkbox extends Element implements Clickable {
     }
 
     @Override
+    public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
+        return false;
+    }
+
+    @Override
     public void paint(IGraphics graphics) {
         int s = font.getLength(title);
         font.drawString(title, x - 4 - s, y + 6, Colors.TEXT_COLOR, graphics);

@@ -57,6 +57,7 @@ public class Settings {
         jsonObject.put("mouse_sfx", true);
         jsonObject.put("keyboard_sfx", true);
         jsonObject.put("desktop", new JSONObject());
+        jsonObject.put("autostart_log",false);
     }
 
     public void updateVolume() {

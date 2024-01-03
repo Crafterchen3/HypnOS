@@ -63,4 +63,9 @@ public class Slider extends Element implements Clickable {
     public boolean mouseMoved(int mouseX, int mouseY) {
         return false;
     }
+
+    @Override
+    public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
+        return false;
+    }
 }

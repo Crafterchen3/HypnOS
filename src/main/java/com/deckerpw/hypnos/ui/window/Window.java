@@ -23,7 +23,7 @@ public class Window extends Element implements KeyListener {
     private final Button closeButton;
     private final Cursor cursor;
     private final String title;
-    private final Screen panel;
+    private final Screen screen;
     public ArrayList<Element> elements = new ArrayList<>();
     public boolean dragging = false;
     public Clickable selectedClickable;
@@ -32,32 +32,32 @@ public class Window extends Element implements KeyListener {
     private int dragPointX;
     private int dragPointY;
 
-    public Window(Screen panel, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title) {
+    public Window(Screen screen, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title) {
         super(x, y, width, height);
         this.windowPane = pane;
-        this.panel = panel;
+        this.screen = screen;
         this.cursor = cursor;
         this.title = title;
         this.closeButton = new Button(width - 19, 2, 15, 14, Registry.CLOSE_BUTTON, new Runnable() {
             @Override
             public void run() {
                 Registry.CLOSE_WINDOW.playSound();
-                panel.removeWindow(Window.this);
+                screen.removeWindow(Window.this);
             }
         });
 
     }
 
-    public Window(Screen panel, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title, BufferedImage icon) {
+    public Window(Screen screen, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title, BufferedImage icon) {
         super(x, y, width, height);
         this.windowPane = pane;
         this.icon = icon;
-        this.panel = panel;
+        this.screen = screen;
         this.cursor = cursor;
         this.title = title;
         this.closeButton = new Button(width - 19, 2, 15, 14, Registry.CLOSE_BUTTON, () -> {
             Registry.CLOSE_WINDOW.playSound();
-            panel.removeWindow(Window.this);
+            screen.removeWindow(Window.this);
         });
 
     }
@@ -122,6 +122,14 @@ public class Window extends Element implements KeyListener {
         return false;
     }
 
+    public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
+        for (Element element : elements) {
+            if (element instanceof Clickable clickable && element.isInside(mouseX - x,mouseY-y))  {
+                return clickable.mouseWheelMoved(mouseX-x,mouseY-y,scrollAmount);
+            }
+        }
+        return false;
+    }
 
     @Override
     public void paint(IGraphics g) {

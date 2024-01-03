@@ -7,6 +7,6 @@ public interface Application {
 
     void OnDesktopInit(Desktop desktop);
 
-    void OnPanelInit(Screen panel);
+    void OnScreenInit(Screen screen);
 
 }

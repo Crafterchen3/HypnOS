@@ -10,8 +10,8 @@ import com.deckerpw.hypnos.ui.element.TextBox;
 import com.deckerpw.hypnos.ui.element.TextButton;
 
 public class LogOffWindow extends Window {
-    public LogOffWindow(Screen panel, int x, int y, Cursor cursor) {
-        super(panel, Registry.POPUP_PANE, x, y, 225, 72, cursor, "LOG OFF?");
+    public LogOffWindow(Screen screen, int x, int y, Cursor cursor) {
+        super(screen, Registry.POPUP_PANE, x, y, 225, 72, cursor, "LOG OFF?");
         elements.add(new TextButton(55, 45, 47, 21, "YES", Registry.DEFAULT_BUTTON, new Runnable() {
             @Override
             public void run() {
@@ -22,14 +22,14 @@ public class LogOffWindow extends Window {
             @Override
             public void run() {
                 Registry.CLOSE_WINDOW.playSound();
-                panel.removeWindow(LogOffWindow.this);
+                screen.removeWindow(LogOffWindow.this);
             }
         }, font));
         elements.add(new Image(11, 16, Registry.WARNING));
         elements.add(new TextBox(42, 15, 160, "Are you sure you want to log off of HypnOS?", font, Colors.TEXT_COLOR));
     }
 
-    public LogOffWindow(Screen panel, Cursor cursor) {
-        this(panel, (480 / 2) - (225 / 2), (270 / 2) - (72 / 2), cursor);
+    public LogOffWindow(Screen screen, Cursor cursor) {
+        this(screen, (480 / 2) - (225 / 2), (270 / 2) - (72 / 2), cursor);
     }
 }

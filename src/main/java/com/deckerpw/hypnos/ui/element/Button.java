@@ -40,6 +40,11 @@ public class Button extends Element implements Clickable {
     }
 
     @Override
+    public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
+        return false;
+    }
+
+    @Override
     public void paint(IGraphics graphics) {
         graphics.drawImage(images[state], x, y, width, height);
     }

@@ -19,17 +19,17 @@ public class TabWindow extends Window {
     public final TabButton[] tabButtons;
     public int selectedTab = 0;
 
-    public TabWindow(Screen panel, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title, BufferedImage icon, String[] tabs) {
-        super(panel, pane, x, y, width, height, cursor, title, icon);
+    public TabWindow(Screen screen, BufferedImage pane, int x, int y, int width, int height, Cursor cursor, String title, BufferedImage icon, String[] tabs) {
+        super(screen, pane, x, y, width, height, cursor, title, icon);
         this.tabs = new ArrayList[tabs.length];
-        tabButtons = new TabButton[tabs.length];
+        this.tabButtons = new TabButton[tabs.length];
         for (int i = 0; i < tabs.length; i++) {
-            tabButtons[i] = new TabButton((i * 60) + 22, 10, font, tabs[i], false, i);
+            this.tabButtons[i] = new TabButton((i * 60) + 22, 10, font, tabs[i], false, i);
         }
         for (int i = 0; i < this.tabs.length; i++) {
             this.tabs[i] = new ArrayList<>(List.of(tabButtons));
         }
-        tabButtons[selectedTab].state = true;
+        this.tabButtons[selectedTab].state = true;
         refreshCurrentTab();
     }
 
@@ -88,6 +88,11 @@ public class TabWindow extends Window {
         @Override
         public boolean mouseMoved(int mouseX, int mouseY) {
             Cursor.getInstance().setState(1);
+            return false;
+        }
+
+        @Override
+        public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
             return false;
         }
 
