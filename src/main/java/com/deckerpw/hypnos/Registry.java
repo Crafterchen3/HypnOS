@@ -7,11 +7,14 @@ import com.deckerpw.hypnos.ui.element.DesktopIcon;
 import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.SettingsWindow;
 import com.deckerpw.hypnos.util.Sound;
+import com.deckerpw.hypnos.util.Wallpaper;
 import org.json.JSONException;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import static com.deckerpw.hypnos.util.Sound.SoundGroup.SFX;
 
@@ -33,6 +36,14 @@ public class Registry {
     public static final BufferedImage[] TAB_BUTTON = new BufferedImage[]{
             getImage("/assets/textures/buttons/windowtab0.png"),
             getImage("/assets/textures/buttons/windowtab1.png")
+    };
+    public static final BufferedImage[] SCROLL_UP = new BufferedImage[]{
+            getImage("/assets/textures/ui/scrollup1.png"),
+            getImage("/assets/textures/ui/scrollup2.png")
+    };
+    public static final BufferedImage[] SCROLL_DOWN = new BufferedImage[]{
+            getImage("/assets/textures/ui/scrolldown1.png"),
+            getImage("/assets/textures/ui/scrolldown2.png")
     };
     //OS
     public static final BufferedImage WINDOW_PANE = getImage("/assets/textures/os/windowpane_306x164.png");
@@ -57,13 +68,12 @@ public class Registry {
     public static final BufferedImage SLIDER = getImage("/assets/textures/ui/slider.png");
     public static final BufferedImage SLIDER_BG = getImage("/assets/textures/ui/sliderbg1.png");
     public static final BufferedImage EDITBOX = getImage("/assets/textures/ui/editbox.png");
+    public static final BufferedImage BACKGROUND_SELECTOR = getImage("/assets/textures/ui/bg_selector.png");
+    public static final BufferedImage SCROLL_BAR = getImage("/assets/textures/ui/scrollbar.png");
     //Fonts
     public static final Font HYPNOFONT_0N = new Font(getImage("/assets/textures/fonts/hypnofont0n.png"));
     //Wallpapers
-    public static final BufferedImage CITY_NIGHT = getImage("/assets/textures/wallpapers/city_02.png");
-    public static final BufferedImage BLUE_RIDGES = getImage("/assets/textures/wallpapers/blue-ridges.png");
-    public static final BufferedImage GAME_BOARD = getImage("/assets/textures/wallpapers/game-board.png");
-    public static final BufferedImage GLEAM_SUNFLOWER = getImage("/assets/textures/wallpapers/gleam_sunflower.png");
+    public static final Wallpaper[] WALLPAPERS = getWallpapers(getImages("/assets/textures/wallpapers/wall", 84));
     public static final BufferedImage GRID = getImage("/assets/textures/wallpapers/grid.png");
     //Cursors
     public static final Cursor CURSOR_DARK = new Cursor(new BufferedImage[]{
@@ -103,7 +113,7 @@ public class Registry {
         Screen screen = Screen.getInstance();
         try {
             screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
-        }catch (JSONException e){
+        } catch (JSONException e) {
             HypnOS.logger.println("JSONException thrown, resetting Settings...");
             HypnOS.settings.loadDefaults();
             screen.addWindow(new SettingsWindow(screen, 50, 50, screen.cursor));
@@ -126,6 +136,8 @@ public class Registry {
             getImage("/assets/textures/apps/files3.png")}, "FILES");
     //Images
     public static final BufferedImage WARNING = getImage("/assets/textures/images/warning.png");
+    //Gifs
+    public static final BufferedImage[] INTRO = getImages("/assets/gifs/intro_logo/image", 22);
 
     private static BufferedImage getImage(String path) {
         try {
@@ -133,6 +145,41 @@ public class Registry {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static BufferedImage[] getImages(String folder, int max) {
+        BufferedImage[] images = new BufferedImage[max];
+        for (int i = 1; i <= max; i++) {
+            images[i - 1] = getImage(folder + i + ".png");
+        }
+        return images;
+    }
+
+    private static boolean hasResource(String path) {
+        URL url = Registry.class.getResource(path);
+        return url != null;
+    }
+
+    private static Wallpaper[] getWallpapers(BufferedImage[] images) {
+        int newWidth = 120;
+        int newHeight = 68;
+        Wallpaper[] wallpapers = new Wallpaper[images.length];
+        for (int i = 0; i < images.length; i++) {
+            BufferedImage inputImage = images[i];
+            if (hasResource("/assets/textures/wallpapers/wall" + (i + 1) + "-icon.png")) {
+                wallpapers[i] = new Wallpaper(getImage("/assets/textures/wallpapers/wall" + (i + 1) + "-icon.png"), inputImage);
+            } else {
+                BufferedImage outputImage = new BufferedImage(newWidth, newHeight, inputImage.getType());
+                Graphics2D graphics2D = outputImage.createGraphics();
+
+                // Resize using nearest neighbor interpolation
+                graphics2D.drawImage(inputImage.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT), 0, 0, newWidth, newHeight, null);
+                graphics2D.dispose();
+
+                wallpapers[i] = new Wallpaper(outputImage, inputImage);
+            }
+        }
+        return wallpapers;
     }
 
     private static Sound getSound(String path, Sound.SoundGroup group) {

@@ -19,7 +19,8 @@ public class Logger {
     public Logger() {
     }
 
-    public void println(String string) {
+    public void println(Object obj) {
+        String string = obj.toString();
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String formattedTime = currentTime.format(formatter);

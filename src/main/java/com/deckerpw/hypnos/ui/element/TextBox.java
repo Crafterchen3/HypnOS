@@ -8,12 +8,12 @@ import java.util.ArrayList;
 
 public class TextBox extends Element {
 
-    private final Font font;
-    private final Color color;
+    protected final Font font;
+    protected final Color color;
     public ArrayList<String> lines = new ArrayList<>();
     protected int start = 0;
 
-    public TextBox(int x, int y, int width,int height, String string, Font font, Color color) {
+    public TextBox(int x, int y, int width, int height, String string, Font font, Color color) {
         super(x, y, width, height);
         this.font = font;
         this.color = color;
@@ -22,7 +22,7 @@ public class TextBox extends Element {
     }
 
     public TextBox(int x, int y, int width, String string, Font font, Color color) {
-        this(x,y,width,8,string,font,color);
+        this(x, y, width, 8, string, font, color);
         height = lines.size() * 9;
     }
 
@@ -44,7 +44,7 @@ public class TextBox extends Element {
     public void paint(IGraphics graphics) {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
-            font.drawString(line, x, y + ((i-start) * 9), color, graphics);
+            font.drawString(line, x, y + ((i - start) * 9), color, graphics);
         }
     }
 }

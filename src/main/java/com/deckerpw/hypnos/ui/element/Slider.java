@@ -15,7 +15,7 @@ public class Slider extends Element implements Clickable {
     int sliderX = 0;
 
     public Slider(int x, int y, String title, Font font) {
-        super(x, y, 3 + 200 + 4, 23 + 9);
+        super(x, y, 3 + 200 + 4 + 5, 23 + 9);
         this.title = title;
         this.font = font;
     }

@@ -19,11 +19,11 @@ import java.util.ArrayList;
 public class Window extends Element implements KeyListener {
 
     public final Font font = Registry.HYPNOFONT_0N;
+    public final Screen screen;
     private final BufferedImage windowPane;
     private final Button closeButton;
     private final Cursor cursor;
     private final String title;
-    private final Screen screen;
     public ArrayList<Element> elements = new ArrayList<>();
     public boolean dragging = false;
     public Clickable selectedClickable;
@@ -55,15 +55,17 @@ public class Window extends Element implements KeyListener {
         this.screen = screen;
         this.cursor = cursor;
         this.title = title;
-        this.closeButton = new Button(width - 19, 2, 15, 14, Registry.CLOSE_BUTTON, () -> {
-            Registry.CLOSE_WINDOW.playSound();
-            screen.removeWindow(Window.this);
-        });
+        this.closeButton = new Button(width - 19, 2, 15, 14, Registry.CLOSE_BUTTON, this::closeWindow);
 
     }
 
     public void addElement(Element element) {
         this.elements.add(element);
+    }
+
+    public void closeWindow() {
+        Registry.CLOSE_WINDOW.playSound();
+        screen.removeWindow(this);
     }
 
     public boolean mousePressed(int mouseX, int mouseY) {
@@ -124,8 +126,8 @@ public class Window extends Element implements KeyListener {
 
     public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
         for (Element element : elements) {
-            if (element instanceof Clickable clickable && element.isInside(mouseX - x,mouseY-y))  {
-                return clickable.mouseWheelMoved(mouseX-x,mouseY-y,scrollAmount);
+            if (element instanceof Clickable clickable && element.isInside(mouseX - x, mouseY - y)) {
+                return clickable.mouseWheelMoved(mouseX - x, mouseY - y, scrollAmount);
             }
         }
         return false;

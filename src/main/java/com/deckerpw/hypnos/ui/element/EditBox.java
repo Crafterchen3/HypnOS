@@ -15,6 +15,7 @@ public class EditBox extends Element implements Clickable, KeyListener {
     private final char[] allowedChars = "0123456789".toCharArray();
     private final Font font;
     private String text = "";
+
     public EditBox(int x, int y, String hint, Font font) {
         super(x, y, 114, 15);
         this.hint = hint;

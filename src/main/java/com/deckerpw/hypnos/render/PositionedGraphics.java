@@ -1,8 +1,10 @@
 package com.deckerpw.hypnos.render;
 
+import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.ui.element.Element;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class PositionedGraphics implements IGraphics {
 
@@ -15,12 +17,13 @@ public class PositionedGraphics implements IGraphics {
     }
 
     @Override
-    public void drawImage(Image image, int x, int y, int width, int height) {
-        graphics.drawImage(image, element.x + x, element.y + y, width, height);
+    public Graphics2D create(int x, int y, int width, int height) {
+        return graphics.create(element.x + x, element.y + y, width, height);
     }
 
     @Override
-    public void drawRect(Color color, int x, int y, int width, int height) {
-        graphics.drawRect(color, element.x + x, element.y + y, width, height);
+    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
+        float size = HypnOS.size;
+        create(0, 0, element.width, element.height).drawImage(image, (int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size), null);
     }
 }

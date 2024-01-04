@@ -2,8 +2,12 @@ package com.deckerpw.hypnos.swing;
 
 import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
+import com.deckerpw.hypnos.render.IGraphics;
+import com.deckerpw.hypnos.render.PositionedGraphics;
 import com.deckerpw.hypnos.ui.Desktop;
 import com.deckerpw.hypnos.ui.element.Cursor;
+import com.deckerpw.hypnos.ui.element.Element;
+import com.deckerpw.hypnos.ui.element.Gif;
 import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.Window;
 import com.deckerpw.hypnos.util.Sound;
@@ -16,19 +20,36 @@ import java.util.ArrayList;
 public class Screen extends JPanel implements KeyListener {
 
     public static Screen instance;
-    public Desktop desktop;
     private final com.deckerpw.hypnos.render.Font font = Registry.HYPNOFONT_0N;
     private final ArrayList<Window> windows = new ArrayList<>();
+    public Desktop desktop;
     public Cursor cursor; //TODO add Setting (that's why it's not final)
     private int mouseX = 0;
     private int mouseY = 0;
     private boolean draggingDesktop;
     private Window draggingWindow;
     private Window selectedWindow;
+    private Gif splashScreen;
 
     public Screen() {
+        HypnOS.logger.println("Starting Screen...");
         setFocusable(true);
         instance = this;
+        if (HypnOS.settings.jsonObject.getBoolean("intro")) {
+            splashScreen = new Gif(0, 0, 480, 270, Registry.INTRO, 10);
+            splashScreen.start();
+        } else {
+            init();
+        }
+    }
+
+    public static Screen getInstance() {
+        return instance;
+    }
+
+    private void init() {
+        HypnOS.logger.println("Initiating Screen...");
+        Registry.STARTUP.playSound();
         cursor = Registry.CURSOR_DARK;
         desktop = new Desktop(cursor);
         MouseAdapter adapter = new MouseAdapter() {
@@ -129,7 +150,7 @@ public class Screen extends JPanel implements KeyListener {
                 mouseX = (int) Math.floor(e.getX() / size);
                 mouseY = (int) Math.floor(e.getY() / size);
                 for (Window window : windows) {
-                    int amount = e.getScrollAmount()/3*e.getWheelRotation();
+                    int amount = e.getScrollAmount() / 3 * e.getWheelRotation();
                     //HypnOS.logger.println(amount+"");
                     if (window.isInside(mouseX, mouseY) && window.mouseWheelMoved(mouseX, mouseY, amount)) {
                         updateUI();
@@ -141,11 +162,7 @@ public class Screen extends JPanel implements KeyListener {
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
         addMouseWheelListener(adapter);
-        if (HypnOS.settings.jsonObject.getBoolean("autostart_log")) addWindow(new LogWindow(this,cursor));
-    }
-
-    public static Screen getInstance() {
-        return instance;
+        if (HypnOS.settings.jsonObject.getBoolean("autostart_log")) addWindow(new LogWindow(this, cursor));
     }
 
     @Override
@@ -183,17 +200,32 @@ public class Screen extends JPanel implements KeyListener {
         Graphics2D g = (Graphics2D) graphics;
         g.setPaintMode();
         g.setColor(Color.black);
-        com.deckerpw.hypnos.render.Graphics graphics1 = new com.deckerpw.hypnos.render.Graphics(g);
+        PositionedGraphics graphics1 = new PositionedGraphics(new com.deckerpw.hypnos.render.Graphics(g), new Element(0, 0, 480, 270) {
+            @Override
+            public void paint(IGraphics graphics) {
+
+            }
+        });
+        if (splashScreen != null) {
+            splashScreen.paint(graphics1);
+            return;
+        }
         desktop.paint(graphics1);
         for (int i = windows.size() - 1; i >= 0; i -= 1) {
             windows.get(i).paint(graphics1);
         }
         cursor.paint(graphics1, mouseX, mouseY);
+
     }
 
 
     @Override
     public void keyTyped(KeyEvent e) {
+        if (splashScreen != null) {
+            splashScreen = null;
+            init();
+            return;
+        }
         if (selectedWindow != null)
             selectedWindow.keyTyped(e);
         updateUI();
@@ -201,7 +233,7 @@ public class Screen extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (selectedWindow != null)
+        if (splashScreen == null && selectedWindow != null)
             selectedWindow.keyPressed(e);
         updateUI();
 
@@ -209,7 +241,7 @@ public class Screen extends JPanel implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (selectedWindow != null)
+        if (splashScreen == null && selectedWindow != null)
             selectedWindow.keyReleased(e);
         updateUI();
 

@@ -3,15 +3,12 @@ package com.deckerpw.hypnos.swing;
 import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.ui.window.LogOffWindow;
-import com.deckerpw.hypnos.util.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.image.BufferedImage;
 import java.awt.datatransfer.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class SwingWindow extends JFrame implements ClipboardOwner {
     private boolean fullscreen = false;
@@ -28,7 +25,7 @@ public class SwingWindow extends JFrame implements ClipboardOwner {
             }
         }), KeyStroke.getKeyStroke("F11"), JComponent.WHEN_FOCUSED);
         rootPane.registerKeyboardAction((e -> {
-            BufferedImage bufferedImage = new BufferedImage(480,270,BufferedImage.TYPE_INT_ARGB);
+            BufferedImage bufferedImage = new BufferedImage(480, 270, BufferedImage.TYPE_INT_ARGB);
             float size = HypnOS.size;
             HypnOS.size = 1;
             screen.paint(bufferedImage.createGraphics());
@@ -90,30 +87,29 @@ public class SwingWindow extends JFrame implements ClipboardOwner {
 
         Image i;
 
-        public TransferableImage( Image i ) {
+        public TransferableImage(Image i) {
             this.i = i;
         }
 
-        public Object getTransferData( DataFlavor flavor )
+        public Object getTransferData(DataFlavor flavor)
                 throws UnsupportedFlavorException, IOException {
-            if ( flavor.equals( DataFlavor.imageFlavor ) && i != null ) {
+            if (flavor.equals(DataFlavor.imageFlavor) && i != null) {
                 return i;
-            }
-            else {
-                throw new UnsupportedFlavorException( flavor );
+            } else {
+                throw new UnsupportedFlavorException(flavor);
             }
         }
 
         public DataFlavor[] getTransferDataFlavors() {
-            DataFlavor[] flavors = new DataFlavor[ 1 ];
-            flavors[ 0 ] = DataFlavor.imageFlavor;
+            DataFlavor[] flavors = new DataFlavor[1];
+            flavors[0] = DataFlavor.imageFlavor;
             return flavors;
         }
 
-        public boolean isDataFlavorSupported( DataFlavor flavor ) {
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
             DataFlavor[] flavors = getTransferDataFlavors();
-            for ( int i = 0; i < flavors.length; i++ ) {
-                if ( flavor.equals( flavors[ i ] ) ) {
+            for (int i = 0; i < flavors.length; i++) {
+                if (flavor.equals(flavors[i])) {
                     return true;
                 }
             }

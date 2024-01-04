@@ -4,12 +4,9 @@ import com.deckerpw.hypnos.swing.Screen;
 import com.deckerpw.hypnos.swing.SwingWindow;
 import com.deckerpw.hypnos.util.Application;
 import com.deckerpw.hypnos.util.Logger;
-import com.deckerpw.hypnos.util.SizeableImage;
 import org.json.JSONException;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -52,9 +49,12 @@ public class HypnOS {
         createFolder(Paths.get(Path, "logs").toString());
         settings = new Settings();
         settings.load();
+        // for (int i = 0; i < 40; i++) {
+        //     logger.println("foobar");
+        // }
         try {
             runClient();
-        }catch (JSONException e){
+        } catch (JSONException e) {
             logger.println("JSONException thrown, resetting Settings...");
             settings.loadDefaults();
             runClient();

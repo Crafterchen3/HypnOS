@@ -9,17 +9,16 @@ import com.deckerpw.hypnos.ui.element.DesktopIcon;
 import com.deckerpw.hypnos.util.Application;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Desktop {
 
     private final ArrayList<DesktopIcon> desktopIcons = new ArrayList<>();
-    private final BufferedImage wallpaper = Registry.CITY_NIGHT;
     private final BufferedImage grid = Registry.GRID;
     private final Cursor cursor;
     private final Font font = Registry.HYPNOFONT_0N;
+    public BufferedImage wallpaper;
     private DesktopIcon pressedIcon;
     private DesktopIcon selectedIcon;
     private int dragPointX;
@@ -27,6 +26,7 @@ public class Desktop {
     private DesktopIcon draggingIcon;
 
     public Desktop(Cursor cursor) {
+        wallpaper = Registry.WALLPAPERS[HypnOS.settings.jsonObject.getInt("wallpaper")].wall;
         this.cursor = cursor;
         addDesktopIcon(Registry.EXPLORER);
         addDesktopIcon(Registry.DOWNLOAD_MANAGER);
@@ -99,7 +99,7 @@ public class Desktop {
         g.drawImage(wallpaper, 0, 0, 480, 270);
         if (draggingIcon != null)
             g.drawImage(grid, 0, 0, 480, 270);
-        font.drawString("HypnOS " + HypnOS.VERSION + " (a Java Desktop inspiered of HypnOS from Hypnospace Outlaw)", 2, 260, Color.WHITE, g);
+        //font.drawString("HypnOS " + HypnOS.VERSION + " (a Java Desktop inspiered of HypnOS from Hypnospace Outlaw)", 2, 260, Color.WHITE, g);
         for (int i = desktopIcons.size() - 1; i >= 0; i--) {
             desktopIcons.get(i).paint(g);
         }

@@ -3,6 +3,7 @@ package com.deckerpw.hypnos.render;
 import com.deckerpw.hypnos.HypnOS;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Graphics implements IGraphics {
 
@@ -12,16 +13,14 @@ public class Graphics implements IGraphics {
         this.graphics2D = graphics2D;
     }
 
-    public void drawImage(Image image, int x, int y, int width, int height) {
+    @Override
+    public Graphics2D create(int x, int y, int width, int height) {
         float size = HypnOS.size;
-        graphics2D.drawImage(image, (int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size), null);
+        return (Graphics2D) graphics2D.create((int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size));
     }
 
-    @Override
-    public void drawRect(Color color, int x, int y, int width, int height) {
+    public void drawImage(BufferedImage image, int x, int y, int width, int height) {
         float size = HypnOS.size;
-        graphics2D.setColor(color);
-        graphics2D.setStroke(new BasicStroke());
-        graphics2D.drawRect((int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size));
+        graphics2D.drawImage(image, (int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size), null);
     }
 }

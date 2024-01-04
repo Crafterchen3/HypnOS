@@ -1,11 +1,12 @@
 package com.deckerpw.hypnos.render;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public interface IGraphics {
 
-    void drawImage(Image image, int x, int y, int width, int height);
+    Graphics2D create(int x, int y, int width, int height);
 
-    void drawRect(Color color, int x, int y, int width, int height);
+    void drawImage(BufferedImage image, int x, int y, int width, int height);
 
 }

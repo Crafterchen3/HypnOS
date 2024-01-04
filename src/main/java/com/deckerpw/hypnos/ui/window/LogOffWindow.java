@@ -12,19 +12,8 @@ import com.deckerpw.hypnos.ui.element.TextButton;
 public class LogOffWindow extends Window {
     public LogOffWindow(Screen screen, int x, int y, Cursor cursor) {
         super(screen, Registry.POPUP_PANE, x, y, 225, 72, cursor, "LOG OFF?");
-        elements.add(new TextButton(55, 45, 47, 21, "YES", Registry.DEFAULT_BUTTON, new Runnable() {
-            @Override
-            public void run() {
-                HypnOS.exit();
-            }
-        }, font));
-        elements.add(new TextButton(121, 45, 47, 21, "NO", Registry.DEFAULT_BUTTON, new Runnable() {
-            @Override
-            public void run() {
-                Registry.CLOSE_WINDOW.playSound();
-                screen.removeWindow(LogOffWindow.this);
-            }
-        }, font));
+        elements.add(new TextButton(55, 45, 47, 21, "YES", Registry.DEFAULT_BUTTON, HypnOS::exit, font));
+        elements.add(new TextButton(121, 45, 47, 21, "NO", Registry.DEFAULT_BUTTON, this::closeWindow, font));
         elements.add(new Image(11, 16, Registry.WARNING));
         elements.add(new TextBox(42, 15, 160, "Are you sure you want to log off of HypnOS?", font, Colors.TEXT_COLOR));
     }

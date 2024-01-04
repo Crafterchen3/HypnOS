@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 
 public class Settings {
 
-    public JSONObject jsonObject;
     private final String filePath = Paths.get(HypnOS.Path, "config.json").toString();
+    public JSONObject jsonObject;
 
     public Settings() {
         this.jsonObject = new JSONObject();
@@ -57,7 +57,9 @@ public class Settings {
         jsonObject.put("mouse_sfx", true);
         jsonObject.put("keyboard_sfx", true);
         jsonObject.put("desktop", new JSONObject());
-        jsonObject.put("autostart_log",false);
+        jsonObject.put("autostart_log", false);
+        jsonObject.put("intro", true);
+        jsonObject.put("wallpaper", 0);
     }
 
     public void updateVolume() {

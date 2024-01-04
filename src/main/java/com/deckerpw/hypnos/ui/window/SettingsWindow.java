@@ -6,7 +6,6 @@ import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.Settings;
 import com.deckerpw.hypnos.render.IGraphics;
 import com.deckerpw.hypnos.swing.Screen;
-import com.deckerpw.hypnos.ui.Desktop;
 import com.deckerpw.hypnos.ui.element.Checkbox;
 import com.deckerpw.hypnos.ui.element.Cursor;
 import com.deckerpw.hypnos.ui.element.*;
@@ -29,11 +28,14 @@ public class SettingsWindow extends TabWindow {
     private final EditBox width;
     private final EditBox height;
     private final Checkbox autoLog;
+    private final WallpaperSelector wallpaperSelector;
+    private final Checkbox intro;
 
     public SettingsWindow(Screen screen, int x, int y, Cursor cursor) {
         super(screen, Registry.WINDOW_PANE, x, y, 306, 164, cursor, "SETTINGS", Registry.SETTINGS_ICON, new String[]{
                 "AUDIO",
-                "DEBUG"
+                "DEBUG",
+                "DISPLAY"
         });
         //(this.elements.add(new TextBox(7,25,width-14,
         //        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
@@ -56,7 +58,7 @@ public class SettingsWindow extends TabWindow {
         sfxVolume = new Slider(8, 60, "SOUND VOLUME", font, settings.jsonObject.getInt("sfx_volume"));
         addElement(sfxVolume);
         addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, () -> screen.removeWindow(SettingsWindow.this), font));
+        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font));
         keyboardSFX = new Checkbox(282, 28, font, "KEY SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("keyboard_sfx"));
         addElement(keyboardSFX);
         mouseSFX = new Checkbox(282, 48, font, "MOUSE SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("mouse_sfx"));
@@ -88,9 +90,16 @@ public class SettingsWindow extends TabWindow {
             }
         }, font), 1);
         autoLog = new Checkbox(282, 28, font, "AUTOSTART LOG", Registry.CHECKBOX, settings.jsonObject.getBoolean("autostart_log"));
-        addElement(autoLog,1);
-        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font),1);
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, () -> screen.removeWindow(SettingsWindow.this), font),1);
+        addElement(autoLog, 1);
+        intro = new Checkbox(282, 48, font, "SHOW INTRO", Registry.CHECKBOX, settings.jsonObject.getBoolean("intro"));
+        addElement(intro, 1);
+        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 1);
+        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 1);
+        wallpaperSelector = new WallpaperSelector(157, 36, Registry.WALLPAPERS);
+        addElement(wallpaperSelector, 2);
+        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 2);
+        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 2);
+
     }
 
     private void ApplySettings() {
@@ -100,7 +109,10 @@ public class SettingsWindow extends TabWindow {
         settings.updateVolume();
         settings.jsonObject.put("keyboard_sfx", keyboardSFX.getState());
         settings.jsonObject.put("mouse_sfx", mouseSFX.getState());
-        settings.jsonObject.put("autostart_log",autoLog.getState());
+        settings.jsonObject.put("autostart_log", autoLog.getState());
+        settings.jsonObject.put("wallpaper", wallpaperSelector.index);
+        screen.desktop.wallpaper = Registry.WALLPAPERS[settings.jsonObject.getInt("wallpaper")].wall;
+        settings.jsonObject.put("intro", intro.getState());
     }
 
 }
