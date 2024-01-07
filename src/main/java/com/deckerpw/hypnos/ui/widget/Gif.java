@@ -1,11 +1,11 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.swing.Screen;
+import com.deckerpw.hypnos.ui.Screen;
 
 import java.awt.image.BufferedImage;
 
-public class Gif extends Element {
+public class Gif extends Widget {
 
     final BufferedImage[] images;
     final int millis;
@@ -34,7 +34,7 @@ public class Gif extends Element {
                     index = 0;
                 else
                     index++;
-                Screen.getInstance().updateUI();
+                Screen.getInstance().update();
             }
         });
         thread.start();

@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 public interface Clickable {
     boolean mousePressed(int mouseX, int mouseY);

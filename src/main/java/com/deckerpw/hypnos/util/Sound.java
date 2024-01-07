@@ -21,23 +21,27 @@ public class Sound {
     }
 
     public void playSound(int volume) {
-        if (group.getVolume() > 0 || volume > 0) {
-            try {
-                AudioInputStream audioIn = AudioSystem.getAudioInputStream(resource);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioIn);
-                //set Volume
-                FloatControl clipVolume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                float setVolume = (group.getVolume() / 100f) * (volume / 100f);
-                float minVolume = clipVolume.getMinimum();
-                float maxVolume = clipVolume.getMaximum();
-                float gain = (maxVolume - minVolume) * setVolume + minVolume;
-                clipVolume.setValue(gain);
+        try {
+            if (group.getVolume() > 0 || volume > 0) {
+                try {
+                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(resource);
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioIn);
+                    //set Volume
+                    FloatControl clipVolume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    float setVolume = (group.getVolume() / 100f) * (volume / 100f);
+                    float minVolume = clipVolume.getMinimum();
+                    float maxVolume = clipVolume.getMaximum();
+                    float gain = (maxVolume - minVolume) * setVolume + minVolume;
+                    clipVolume.setValue(gain);
 
-                clip.start();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                    clip.start();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

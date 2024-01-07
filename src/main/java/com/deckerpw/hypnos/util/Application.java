@@ -1,7 +1,7 @@
 package com.deckerpw.hypnos.util;
 
-import com.deckerpw.hypnos.swing.Screen;
 import com.deckerpw.hypnos.ui.Desktop;
+import com.deckerpw.hypnos.ui.Screen;
 
 public interface Application {
 

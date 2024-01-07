@@ -1,9 +1,10 @@
 package com.deckerpw.hypnos;
 
 import com.deckerpw.hypnos.render.Font;
-import com.deckerpw.hypnos.swing.Screen;
-import com.deckerpw.hypnos.ui.element.Cursor;
-import com.deckerpw.hypnos.ui.element.DesktopIcon;
+import com.deckerpw.hypnos.ui.Screen;
+import com.deckerpw.hypnos.ui.widget.Cursor;
+import com.deckerpw.hypnos.ui.widget.DesktopIcon;
+import com.deckerpw.hypnos.ui.window.FileManagerWindow;
 import com.deckerpw.hypnos.ui.window.LogWindow;
 import com.deckerpw.hypnos.ui.window.SettingsWindow;
 import com.deckerpw.hypnos.util.Sound;
@@ -49,8 +50,10 @@ public class Registry {
     public static final BufferedImage WINDOW_PANE = getImage("/assets/textures/os/windowpane_306x164.png");
     public static final BufferedImage POPUP_PANE = getImage("/assets/textures/os/popuppane_225x72.png");
     public static final BufferedImage LOG_PANE = getImage("/assets/textures/os/logpane.png");
+    public static final BufferedImage FILES_PANE = getImage("/assets/textures/os/filespane.png");
     public static final Sound STARTUP = getSound("/assets/sounds/os/startup.wav", SFX);
     public static final BufferedImage POPUP_WINDOW = getImage("/assets/textures/os/popupwindow.png");
+    public static final BufferedImage WINDOW = getImage("/assets/textures/os/windowtrans.png");
     public static final Sound ALERT_WINDOW = getSound("/assets/sounds/os/alert_window.wav", SFX);
     public static final Sound OPEN_WINDOW = getSound("/assets/sounds/os/openwindow.wav", SFX);
     public static final Sound CLOSE_WINDOW = getSound("/assets/sounds/os/close.wav", SFX);
@@ -89,10 +92,17 @@ public class Registry {
             getImage("/assets/textures/apps/explorer1.png"),
             getImage("/assets/textures/apps/explorer2.png"),
             getImage("/assets/textures/apps/explorer3.png")}, "EXPLORER");
-    public static final DesktopIcon DOWNLOAD_MANAGER = new DesktopIcon(40, 0, 32, 32, new BufferedImage[]{
-            getImage("/assets/textures/apps/downloads1.png"),
-            getImage("/assets/textures/apps/downloads2.png"),
-            getImage("/assets/textures/apps/downloads3.png")}, "DOWNLOAD_MANAGER");
+    public static final BufferedImage FILE_MANAGER_ICON = getImage("/assets/textures/images/icons/files.png");
+    public static final BufferedImage FILE_ENTRY = getImage("/assets/textures/images/file_explorer/entry.png");
+    public static final BufferedImage NEW_FOLDER = getImage("/assets/textures/buttons/newfolder.png");
+    public static final DesktopIcon FILE_MANAGER = new DesktopIcon(40, 0, 32, 32, new BufferedImage[]{
+            getImage("/assets/textures/apps/files1.png"),
+            getImage("/assets/textures/apps/files2.png"),
+            getImage("/assets/textures/apps/files3.png")}, () -> {
+        Screen screen = Screen.getInstance();
+        screen.addWindow(new FileManagerWindow(screen, screen.cursor));
+
+    }, "FILE_MANAGER");
     public static final DesktopIcon HSPD = new DesktopIcon(80, 0, 32, 32, new BufferedImage[]{
             getImage("/assets/textures/apps/hspd1.png"),
             getImage("/assets/textures/apps/hspd2.png"),
@@ -130,10 +140,6 @@ public class Registry {
         Screen screen = Screen.getInstance();
         screen.addWindow(new LogWindow(screen, screen.cursor));
     }, "LOG");
-    public static final DesktopIcon FILES = new DesktopIcon(40, 120, 32, 32, new BufferedImage[]{
-            getImage("/assets/textures/apps/files1.png"),
-            getImage("/assets/textures/apps/files2.png"),
-            getImage("/assets/textures/apps/files3.png")}, "FILES");
     //Images
     public static final BufferedImage WARNING = getImage("/assets/textures/images/warning.png");
     //Gifs

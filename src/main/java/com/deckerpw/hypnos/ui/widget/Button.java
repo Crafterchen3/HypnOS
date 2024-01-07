@@ -1,10 +1,10 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.render.IGraphics;
 
 import java.awt.image.BufferedImage;
 
-public class Button extends Element implements Clickable {
+public class Button extends Widget implements Clickable {
 
     private final Runnable runnable;
     private final BufferedImage[] images;

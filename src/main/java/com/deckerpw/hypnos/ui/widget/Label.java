@@ -1,11 +1,11 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
 
 import java.awt.*;
 
-public class Label extends Element {
+public class Label extends Widget {
 
     private final Font font;
     private final String text;

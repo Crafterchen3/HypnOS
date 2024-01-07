@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.Colors;
 import com.deckerpw.hypnos.Registry;
@@ -8,7 +8,7 @@ import com.deckerpw.hypnos.render.PositionedGraphics;
 
 import java.awt.*;
 
-public class Slider extends Element implements Clickable {
+public class Slider extends Widget implements Clickable {
 
     final String title;
     final Font font;

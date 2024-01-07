@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
 
-public class DesktopIcon extends Element {
+public class DesktopIcon extends Widget {
 
     public final BufferedImage[] icons;
     public final String id;

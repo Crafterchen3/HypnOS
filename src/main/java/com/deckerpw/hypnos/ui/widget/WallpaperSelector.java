@@ -1,18 +1,19 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
+import com.deckerpw.hypnos.Colors;
 import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.IGraphics;
 import com.deckerpw.hypnos.render.PositionedGraphics;
 import com.deckerpw.hypnos.util.Wallpaper;
 
-public class WallpaperSelector extends Element implements Clickable {
+public class WallpaperSelector extends Widget implements Clickable {
 
     public final Wallpaper[] wallpapers;
+    private final Button scrollUp;
     public int index;
     public Button scrollDown;
     public ScrollBar scrollBar;
-    private final Button scrollUp;
     private Clickable selected;
 
     public WallpaperSelector(int x, int y, Wallpaper[] wallpapers) {
@@ -36,6 +37,7 @@ public class WallpaperSelector extends Element implements Clickable {
 
     @Override
     public void paint(IGraphics graphics) {
+        Registry.HYPNOFONT_0N.drawCenteredString("WALLPAPER:", x + (width / 2), y - 10, Colors.TEXT_COLOR, graphics);
         PositionedGraphics graphics1 = new PositionedGraphics(graphics, this);
         graphics1.drawImage(Registry.BACKGROUND_SELECTOR, 0, 0, width, height);
         graphics1.drawImage(wallpapers[index].icon, 2, 2, 120, 68);
@@ -84,7 +86,7 @@ public class WallpaperSelector extends Element implements Clickable {
         return true;
     }
 
-    private class ScrollBar extends Element implements Clickable {
+    private class ScrollBar extends Widget implements Clickable {
 
         int dragY;
 

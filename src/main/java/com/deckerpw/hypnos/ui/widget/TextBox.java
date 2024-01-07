@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
@@ -6,7 +6,7 @@ import com.deckerpw.hypnos.render.IGraphics;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class TextBox extends Element {
+public class TextBox extends Widget {
 
     protected final Font font;
     protected final Color color;

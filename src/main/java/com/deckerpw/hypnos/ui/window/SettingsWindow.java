@@ -5,10 +5,10 @@ import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.Settings;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.swing.Screen;
-import com.deckerpw.hypnos.ui.element.Checkbox;
-import com.deckerpw.hypnos.ui.element.Cursor;
-import com.deckerpw.hypnos.ui.element.*;
+import com.deckerpw.hypnos.ui.Screen;
+import com.deckerpw.hypnos.ui.widget.Checkbox;
+import com.deckerpw.hypnos.ui.widget.Cursor;
+import com.deckerpw.hypnos.ui.widget.*;
 import com.deckerpw.hypnos.util.SizeableImage;
 
 import javax.imageio.ImageIO;
@@ -25,6 +25,7 @@ public class SettingsWindow extends TabWindow {
     private final Checkbox mouseSFX;
     private final Checkbox keyboardSFX;
     private final SizeableImage win;
+    private final SizeableImage win2;
     private final EditBox width;
     private final EditBox height;
     private final Checkbox autoLog;
@@ -37,7 +38,7 @@ public class SettingsWindow extends TabWindow {
                 "DEBUG",
                 "DISPLAY"
         });
-        //(this.elements.add(new TextBox(7,25,width-14,
+        //(this.widgets.add(new TextBox(7,25,width-14,
         //        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
         //        font, Color.BLACK));
         BufferedImage pop = Registry.POPUP_WINDOW;
@@ -52,24 +53,36 @@ public class SettingsWindow extends TabWindow {
                 pop.getSubimage(41, 19, 5, 1),
                 new Color(0xFF9BC7F5)
         );
+        BufferedImage wind = Registry.WINDOW;
+        win2 = new SizeableImage(
+                wind.getSubimage(0, 0, 21, 21),
+                wind.getSubimage(24, 0, 22, 21),
+                wind.getSubimage(0, 23, 5, 4),
+                wind.getSubimage(41, 23, 5, 4),
+                wind.getSubimage(21, 0, 1, 19),
+                wind.getSubimage(5, 23, 1, 4),
+                wind.getSubimage(0, 21, 5, 1),
+                wind.getSubimage(41, 21, 5, 1),
+                new Color(0xFF9BC7F5)
+        );
         Settings settings = HypnOS.settings;
         musicVolume = new Slider(8, 25, "MUSIC VOLUME", font, settings.jsonObject.getInt("music_volume"));
-        addElement(musicVolume);
+        addWidget(musicVolume);
         sfxVolume = new Slider(8, 60, "SOUND VOLUME", font, settings.jsonObject.getInt("sfx_volume"));
-        addElement(sfxVolume);
-        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font));
+        addWidget(sfxVolume);
+        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
+        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font));
         keyboardSFX = new Checkbox(282, 28, font, "KEY SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("keyboard_sfx"));
-        addElement(keyboardSFX);
+        addWidget(keyboardSFX);
         mouseSFX = new Checkbox(282, 48, font, "MOUSE SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("mouse_sfx"));
-        addElement(mouseSFX);
+        addWidget(mouseSFX);
         refreshCurrentTab();
         width = new EditBox(11, 25, "WIDTH", font);
-        addElement(width, 1);
+        addWidget(width, 1);
         height = new EditBox(11, 50, "HEIGHT", font);
-        addElement(height, 1);
-        addElement(new TextButton(11, 136, 47, 21, "OPEN", Registry.DEFAULT_BUTTON, () -> {
-            BufferedImage pane = win.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
+        addWidget(height, 1);
+        addWidget(new TextButton(11, 136, 47, 21, "OPEN", Registry.DEFAULT_BUTTON, () -> {
+            BufferedImage pane = win2.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
             Window window = new Window(screen, pane, 20, 20, pane.getWidth(), pane.getHeight(), cursor, "TEST") {
                 @Override
                 public void paint(IGraphics g) {
@@ -79,8 +92,8 @@ public class SettingsWindow extends TabWindow {
             };
             screen.addWindow(window);
         }, font), 1);
-        addElement(new TextButton(11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
-            BufferedImage pane = win.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
+        addWidget(new TextButton(11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
+            BufferedImage pane = win2.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
             File outputfile = new File(Paths.get(HypnOS.Path, "output.png").toString());
             try {
                 ImageIO.write(pane, "png", outputfile);
@@ -90,15 +103,15 @@ public class SettingsWindow extends TabWindow {
             }
         }, font), 1);
         autoLog = new Checkbox(282, 28, font, "AUTOSTART LOG", Registry.CHECKBOX, settings.jsonObject.getBoolean("autostart_log"));
-        addElement(autoLog, 1);
+        addWidget(autoLog, 1);
         intro = new Checkbox(282, 48, font, "SHOW INTRO", Registry.CHECKBOX, settings.jsonObject.getBoolean("intro"));
-        addElement(intro, 1);
-        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 1);
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 1);
-        wallpaperSelector = new WallpaperSelector(157, 36, Registry.WALLPAPERS);
-        addElement(wallpaperSelector, 2);
-        addElement(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 2);
-        addElement(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 2);
+        addWidget(intro, 1);
+        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 1);
+        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 1);
+        wallpaperSelector = new WallpaperSelector(306 / 2 - (133 / 2), 48, Registry.WALLPAPERS);
+        addWidget(wallpaperSelector, 2);
+        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 2);
+        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 2);
 
     }
 

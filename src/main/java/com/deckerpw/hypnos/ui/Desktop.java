@@ -4,8 +4,8 @@ import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.ui.element.Cursor;
-import com.deckerpw.hypnos.ui.element.DesktopIcon;
+import com.deckerpw.hypnos.ui.widget.Cursor;
+import com.deckerpw.hypnos.ui.widget.DesktopIcon;
 import com.deckerpw.hypnos.util.Application;
 import org.json.JSONObject;
 
@@ -29,7 +29,7 @@ public class Desktop {
         wallpaper = Registry.WALLPAPERS[HypnOS.settings.jsonObject.getInt("wallpaper")].wall;
         this.cursor = cursor;
         addDesktopIcon(Registry.EXPLORER);
-        addDesktopIcon(Registry.DOWNLOAD_MANAGER);
+        addDesktopIcon(Registry.FILE_MANAGER);
         addDesktopIcon(Registry.HSPD);
         addDesktopIcon(Registry.RECYCLE_BIN);
         addDesktopIcon(Registry.PETS);
@@ -83,8 +83,8 @@ public class Desktop {
             draggingIcon = pressedIcon;
             draggingIcon.dragging = true;
             cursor.setState(6);
-            dragPointX = mouseX - draggingIcon.x;
-            dragPointY = mouseY - draggingIcon.y;
+            dragPointX = mouseX - draggingIcon.getX();
+            dragPointY = mouseY - draggingIcon.getY();
         }
         if (draggingIcon != null) {
             int newX = (int) Math.floor((mouseX - dragPointX) / 4) * 4;
@@ -109,8 +109,8 @@ public class Desktop {
         JSONObject desktop = new JSONObject();
         for (DesktopIcon desktopIcon : desktopIcons) {
             JSONObject icon = new JSONObject();
-            icon.put("x", desktopIcon.x);
-            icon.put("y", desktopIcon.y);
+            icon.put("x", desktopIcon.getX());
+            icon.put("y", desktopIcon.getY());
             desktop.put(desktopIcon.id, icon);
         }
         return desktop;

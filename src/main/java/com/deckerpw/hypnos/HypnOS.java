@@ -1,7 +1,7 @@
 package com.deckerpw.hypnos;
 
-import com.deckerpw.hypnos.swing.Screen;
 import com.deckerpw.hypnos.swing.SwingWindow;
+import com.deckerpw.hypnos.ui.Screen;
 import com.deckerpw.hypnos.util.Application;
 import com.deckerpw.hypnos.util.Logger;
 import org.json.JSONException;

@@ -5,18 +5,18 @@ import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
 import com.deckerpw.hypnos.render.PositionedGraphics;
-import com.deckerpw.hypnos.swing.Screen;
-import com.deckerpw.hypnos.ui.element.Button;
-import com.deckerpw.hypnos.ui.element.Clickable;
-import com.deckerpw.hypnos.ui.element.Cursor;
-import com.deckerpw.hypnos.ui.element.Element;
+import com.deckerpw.hypnos.ui.Screen;
+import com.deckerpw.hypnos.ui.widget.Button;
+import com.deckerpw.hypnos.ui.widget.Clickable;
+import com.deckerpw.hypnos.ui.widget.Cursor;
+import com.deckerpw.hypnos.ui.widget.Widget;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Window extends Element implements KeyListener {
+public class Window extends Widget implements KeyListener {
 
     public final Font font = Registry.HYPNOFONT_0N;
     public final Screen screen;
@@ -24,7 +24,7 @@ public class Window extends Element implements KeyListener {
     private final Button closeButton;
     private final Cursor cursor;
     private final String title;
-    public ArrayList<Element> elements = new ArrayList<>();
+    public ArrayList<Widget> widgets = new ArrayList<>();
     public boolean dragging = false;
     public Clickable selectedClickable;
     public KeyListener selectedKeyListener;
@@ -59,8 +59,8 @@ public class Window extends Element implements KeyListener {
 
     }
 
-    public void addElement(Element element) {
-        this.elements.add(element);
+    public void addWidget(Widget widget) {
+        this.widgets.add(widget);
     }
 
     public void closeWindow() {
@@ -68,19 +68,26 @@ public class Window extends Element implements KeyListener {
         screen.removeWindow(this);
     }
 
+    public Widget getWidgetAt(int x, int y) {
+        for (Widget widget : widgets) {
+            if (widget.isInside(x, y))
+                return widget;
+        }
+        return null;
+    }
+
     public boolean mousePressed(int mouseX, int mouseY) {
         if (closeButton.isInside(mouseX - x, mouseY - y)) {
             selectedClickable = closeButton;
             return closeButton.mousePressed(mouseX, mouseY);
         }
-        for (Element element : elements) {
-            if (element instanceof Clickable clickable && element.isInside(mouseX - x, mouseY - y)) {
-                selectedClickable = clickable;
-                selectedKeyListener = null;
-                if (element instanceof KeyListener listener)
-                    selectedKeyListener = listener;
-                return clickable.mousePressed(mouseX - x, mouseY - y);
-            }
+        Widget widget = getWidgetAt(mouseX - x, mouseY - y);
+        if (widget instanceof Clickable clickable) {
+            selectedClickable = clickable;
+            selectedKeyListener = null;
+            if (widget instanceof KeyListener listener)
+                selectedKeyListener = listener;
+            return clickable.mousePressed(mouseX - x, mouseY - y);
         }
         return false;
     }
@@ -116,19 +123,17 @@ public class Window extends Element implements KeyListener {
     }
 
     public boolean mouseMoved(int mouseX, int mouseY) {
-        for (Element element : elements) {
-            if (element instanceof Clickable clickable && element.isInside(mouseX - x, mouseY - y)) {
-                return clickable.mouseMoved(mouseX - x, mouseY - y);
-            }
+        Widget widget = getWidgetAt(mouseX - x, mouseY - y);
+        if (widget instanceof Clickable clickable) {
+            return clickable.mouseMoved(mouseX - x, mouseY - y);
         }
         return false;
     }
 
     public boolean mouseWheelMoved(int mouseX, int mouseY, int scrollAmount) {
-        for (Element element : elements) {
-            if (element instanceof Clickable clickable && element.isInside(mouseX - x, mouseY - y)) {
-                return clickable.mouseWheelMoved(mouseX - x, mouseY - y, scrollAmount);
-            }
+        Widget widget = getWidgetAt(mouseX - x, mouseY - y);
+        if (widget instanceof Clickable clickable) {
+            return clickable.mouseWheelMoved(mouseX - x, mouseY - y, scrollAmount);
         }
         return false;
     }
@@ -141,8 +146,8 @@ public class Window extends Element implements KeyListener {
         if (icon != null)
             graphics.drawImage(icon, 4, 3, 16, 16);
         closeButton.paint(graphics);
-        for (Element element : elements) {
-            element.paint(graphics);
+        for (Widget widget : widgets) {
+            widget.paint(graphics);
         }
     }
 

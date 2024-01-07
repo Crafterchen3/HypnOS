@@ -3,10 +3,10 @@ package com.deckerpw.hypnos.ui.window;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.swing.Screen;
-import com.deckerpw.hypnos.ui.element.Clickable;
-import com.deckerpw.hypnos.ui.element.Cursor;
-import com.deckerpw.hypnos.ui.element.Element;
+import com.deckerpw.hypnos.ui.Screen;
+import com.deckerpw.hypnos.ui.widget.Clickable;
+import com.deckerpw.hypnos.ui.widget.Cursor;
+import com.deckerpw.hypnos.ui.widget.Widget;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TabWindow extends Window {
 
-    public final ArrayList<Element>[] tabs;
+    public final ArrayList<Widget>[] tabs;
     public final TabButton[] tabButtons;
     public int selectedTab = 0;
 
@@ -33,20 +33,20 @@ public class TabWindow extends Window {
         refreshCurrentTab();
     }
 
-    public void addElement(Element element, int tab) {
-        this.tabs[tab].add(element);
+    public void addWidget(Widget widget, int tab) {
+        this.tabs[tab].add(widget);
     }
 
     @Override
-    public void addElement(Element element) {
-        addElement(element, selectedTab);
+    public void addWidget(Widget widget) {
+        addWidget(widget, selectedTab);
     }
 
     public void refreshCurrentTab() {
-        elements = tabs[selectedTab];
+        widgets = tabs[selectedTab];
     }
 
-    class TabButton extends Element implements Clickable {
+    class TabButton extends Widget implements Clickable {
 
         private final Font font;
         private final String title;

@@ -1,10 +1,10 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.render.IGraphics;
 
 import java.awt.image.BufferedImage;
 
-public class Image extends Element {
+public class Image extends Widget {
 
     public BufferedImage image;
 

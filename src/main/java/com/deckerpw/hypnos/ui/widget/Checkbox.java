@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.Colors;
 import com.deckerpw.hypnos.render.Font;
@@ -6,7 +6,7 @@ import com.deckerpw.hypnos.render.IGraphics;
 
 import java.awt.image.BufferedImage;
 
-public class Checkbox extends Element implements Clickable {
+public class Checkbox extends Widget implements Clickable {
 
     private final Font font;
     private final String title;

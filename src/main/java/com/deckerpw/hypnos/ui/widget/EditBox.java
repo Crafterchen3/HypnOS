@@ -1,4 +1,4 @@
-package com.deckerpw.hypnos.ui.element;
+package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.Colors;
 import com.deckerpw.hypnos.Registry;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class EditBox extends Element implements Clickable, KeyListener {
+public class EditBox extends Widget implements Clickable, KeyListener {
 
     private final String hint;
     private final char[] allowedChars = "0123456789".toCharArray();
