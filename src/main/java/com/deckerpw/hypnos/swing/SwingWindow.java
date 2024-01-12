@@ -66,7 +66,9 @@ public class SwingWindow extends JFrame implements ClipboardOwner {
         dispose();
         this.setUndecorated(fullscreen);
         if (fullscreen) {
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            for ( Window w : Window.getWindows() ) {
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow( w );
+            }
             setVisible(true);
             Dimension dimension = this.getSize();
             HypnOS.size = Math.min(dimension.width / 480f, dimension.height / 270f);

@@ -27,37 +27,15 @@ public class HypnOS {
     public static Logger logger;
 
     public static void main(String[] args) {
-        //BufferedImage pop = Registry.POPUP_WINDOW;
-        //BufferedImage image = new SizeableImage(
-        //        pop.getSubimage(0, 0, 5, 11),
-        //        pop.getSubimage(24, 0, 22, 19),
-        //        pop.getSubimage(0, 21, 5, 4),
-        //        pop.getSubimage(41, 21, 5, 4),
-        //        pop.getSubimage(5, 0, 1, 11),
-        //        pop.getSubimage(5, 21, 1, 4),
-        //        pop.getSubimage(0, 11, 5, 1),
-        //        pop.getSubimage(41, 19, 5, 1),
-        //        new Color(0xFF9BC7F5)
-        //).genImage(100, 100);
-        logger = new Logger();
-        if (args.length >= 1) {
-            Path = args[0];
-        } else {
-            Path = Paths.get(System.getProperty("user.home"), "HypnOS").toString();
-            createFolder(Path);
-        }
-        createFolder(Paths.get(Path, "logs").toString());
-        settings = new Settings();
-        settings.load();
-        // for (int i = 0; i < 40; i++) {
-        //     logger.println("foobar");
-        // }
+        String path = "";
+        if (args.length > 0)
+            path = args[0];
         try {
-            runClient();
+            runClient(path);
         } catch (JSONException e) {
             logger.println("JSONException thrown, resetting Settings...");
             settings.loadDefaults();
-            runClient();
+            runClient(path);
         }
     }
 
@@ -93,15 +71,24 @@ public class HypnOS {
         }
     }
 
-    public static void runClient() {
+    public static void runClient(String path) {
+        logger = new Logger();
+        if (path != null && path.isEmpty()){
+            HypnOS.Path = Paths.get(System.getProperty("user.home"), "HypnOS").toString();
+            createFolder(HypnOS.Path);
+        }else
+            HypnOS.Path = path;
+        createFolder(Paths.get(path, "logs").toString());
+        settings = new Settings();
+        settings.load();
         new Loader().loadMods();
         Registry.STARTUP.playSound(20);
         newSize(0);
     }
 
-    public static void runClient(Application mod) {
+    public static void runClient(Application mod, String path) {
         mods.add(mod);
-        runClient();
+        runClient(path);
     }
 
     public static void newSize(int i) {
