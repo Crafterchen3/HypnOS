@@ -13,22 +13,26 @@ public class TextBox extends Widget {
     public ArrayList<String> lines = new ArrayList<>();
     protected int start = 0;
 
-    public TextBox(int x, int y, int width, int height, String string, Font font, Color color) {
-        super(x, y, width, height);
+    public TextBox(Widget parent, int x, int y, int width, int height, String string, Font font, Color color) {
+        super(parent,x, y, width, height);
         this.font = font;
         this.color = color;
         genLines(string);
 
     }
 
-    public TextBox(int x, int y, int width, String string, Font font, Color color) {
-        this(x, y, width, 8, string, font, color);
+    public TextBox(Widget parent, int x, int y, int width, String string, Font font, Color color) {
+        this(parent,x, y, width, 8, string, font, color);
         height = lines.size() * 9;
     }
 
     public void genLines(String string) {
         String line = "";
         for (char c : string.toCharArray()) {
+            if (c == '\n') {
+                line += c;
+                break;
+            }
             if (font.getLength(line + c) > width)
                 break;
             line += c;
@@ -38,13 +42,14 @@ public class TextBox extends Widget {
         if (rest != "") {
             genLines(rest);
         }
+        update();
     }
 
     @Override
     public void paint(IGraphics graphics) {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
-            font.drawString(line, x, y + ((i - start) * 9), color, graphics);
+            font.drawString(line, 0, (i - start) * 9, color, graphics);
         }
     }
 }

@@ -4,7 +4,6 @@ import com.deckerpw.hypnos.Colors;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.render.PositionedGraphics;
 
 import java.awt.*;
 
@@ -14,24 +13,23 @@ public class Slider extends Widget implements Clickable {
     final Font font;
     int sliderX = 0;
 
-    public Slider(int x, int y, String title, Font font) {
-        super(x, y, 3 + 200 + 4 + 5, 23 + 9);
+    public Slider(Widget parent,int x, int y, String title, Font font) {
+        super(parent, x, y, 3 + 200 + 4 + 5, 23 + 9);
         this.title = title;
         this.font = font;
     }
 
-    public Slider(int x, int y, String title, Font font, int value) {
-        this(x, y, title, font);
+    public Slider(Widget parent,int x, int y, String title, Font font, int value) {
+        this(parent, x, y, title, font);
         setValue(value);
     }
 
     @Override
     public void paint(IGraphics g) {
-        PositionedGraphics graphics = new PositionedGraphics(g, this);
-        font.drawString(title, 2, 0, Colors.TEXT_COLOR, graphics);
-        font.drawString(getValue() + "", Math.max(80, sliderX), 0, new Color(0xFFC82828), graphics);
-        graphics.drawImage(Registry.SLIDER_BG, 3, 9, 200, 23);
-        graphics.drawImage(Registry.SLIDER, sliderX, 9, 8, 18);
+        font.drawString(title, 2, 0, Colors.TEXT_COLOR, g);
+        font.drawString(getValue() + "", Math.max(80, sliderX), 0, new Color(0xFFC82828), g);
+        g.drawImage(Registry.SLIDER_BG, 3, 9, 200, 23);
+        g.drawImage(Registry.SLIDER, sliderX, 9, 8, 18);
     }
 
     public int getValue() {
@@ -44,7 +42,8 @@ public class Slider extends Widget implements Clickable {
 
     @Override
     public boolean mousePressed(int mouseX, int mouseY) {
-        sliderX = Math.min(199, Math.max(0, mouseX - x - 3));
+        sliderX = Math.min(199, Math.max(0, mouseX - 3));
+        update();
         return true;
     }
 
@@ -55,7 +54,8 @@ public class Slider extends Widget implements Clickable {
 
     @Override
     public boolean mouseDragged(int mouseX, int mouseY) {
-        sliderX = Math.min(199, Math.max(0, mouseX - x - 3));
+        sliderX = Math.min(199, Math.max(0, mouseX - 3));
+        update();
         return true;
     }
 

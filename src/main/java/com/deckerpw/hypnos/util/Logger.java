@@ -1,6 +1,6 @@
 package com.deckerpw.hypnos.util;
 
-import com.deckerpw.hypnos.HypnOS;
+import com.deckerpw.hypnos.machine.Machine;
 import com.deckerpw.hypnos.ui.window.LogWindow;
 
 import java.io.FileWriter;
@@ -9,14 +9,30 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.EventListener;
 
 public class Logger {
 
     public final String ANSI_GREEN = "\u001B[32m";
     public final String ANSI_RESET = "\u001B[0m";
     public final ArrayList<String> lines = new ArrayList<>();
+    public final String directory;
+    public final ArrayList<LoggerEventListener> eventListeners = new ArrayList<>();
 
-    public Logger() {
+    public Logger(Machine machine) {
+        directory = Paths.get(machine.getPath(), "logs").toString();
+    }
+
+    public Logger(String directory) {
+        this.directory = directory;
+    }
+
+    public void addEventListener(LoggerEventListener listener) {
+        eventListeners.add(listener);
+    }
+
+    public void removeEventListener(LoggerEventListener listener) {
+        eventListeners.remove(listener);
     }
 
     public void println(Object obj) {
@@ -29,7 +45,9 @@ public class Logger {
         String logMessage = "[" + formattedTime + "] " + string;
         lines.add(logMessage);
         System.out.println(coloredlogMessage);
-        if (LogWindow.getInstance() != null) LogWindow.getInstance().add(logMessage);
+        for (LoggerEventListener eventListener : eventListeners) {
+            eventListener.actionPerformed(logMessage);
+        }
     }
 
     public void save(String filePath) {
@@ -50,7 +68,11 @@ public class Logger {
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedTime = currentTime.format(formatter);
-        save(Paths.get(HypnOS.Path, "logs", formattedTime + ".log").toString());
+        save(Paths.get(directory, formattedTime + ".log").toString());
+    }
+
+    public interface LoggerEventListener extends EventListener {
+        void actionPerformed(String newLine);
     }
 
 }

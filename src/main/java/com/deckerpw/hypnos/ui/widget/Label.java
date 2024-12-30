@@ -11,8 +11,8 @@ public class Label extends Widget {
     private final String text;
     private final Color color;
 
-    public Label(int x, int y, String string, Font font, Color color) {
-        super(x, y, font.getLength(string), 8);
+    public Label(Widget parent, int x, int y, String string, Font font, Color color) {
+        super(parent, x, y, font.getLength(string), 8);
         this.text = string;
         this.font = font;
         this.color = color;
@@ -20,6 +20,6 @@ public class Label extends Widget {
 
     @Override
     public void paint(IGraphics graphics) {
-        font.drawString(text, x, y, color, graphics);
+        font.drawString(text, 0, 0, color, graphics);
     }
 }

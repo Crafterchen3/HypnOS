@@ -1,10 +1,9 @@
 package com.deckerpw.hypnos.ui.widget;
 
 import com.deckerpw.hypnos.Colors;
-import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
+import com.deckerpw.hypnos.machine.Machine;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.render.PositionedGraphics;
 import com.deckerpw.hypnos.util.Wallpaper;
 
 public class WallpaperSelector extends Widget implements Clickable {
@@ -15,64 +14,54 @@ public class WallpaperSelector extends Widget implements Clickable {
     public Button scrollDown;
     public ScrollBar scrollBar;
     private Clickable selected;
+    private final Container scrollContainer;
 
-    public WallpaperSelector(int x, int y, Wallpaper[] wallpapers) {
-        super(x, y, 133, 72);
+    public WallpaperSelector(Widget parent, Machine machine, int x, int y, Wallpaper[] wallpapers) {
+        super(parent, x, y-10, 133, 82);
         this.wallpapers = wallpapers;
-        this.scrollUp = new Button(124, 0, 9, 10, Registry.SCROLL_UP, () -> {
+        scrollContainer = new Container(this, 124, 10, 9, 70);
+        this.scrollUp = new Button(scrollContainer, 0, 0, 9, 10, Registry.SCROLL_UP, () -> {
             setIndex(index - 1);
         });
-        this.scrollDown = new Button(124, 62, 9, 10, Registry.SCROLL_DOWN, () -> {
+        this.scrollDown = new Button(scrollContainer, 0, 63, 9, 9, Registry.SCROLL_DOWN, () -> {
             setIndex(index + 1);
         });
-        this.scrollBar = new ScrollBar(124, 10);
-        setIndex(HypnOS.settings.jsonObject.getInt("wallpaper"));
+        this.scrollBar = new ScrollBar(scrollContainer, 0, 10);
+        scrollContainer.addWidget(scrollUp);
+        scrollContainer.addWidget(scrollDown);
+        scrollContainer.addWidget(scrollBar);
+        setIndex(machine.getCurrentUser().getConfig().getInt("wallpaper"));
     }
 
     void setIndex(int i) {
         index = Math.min(wallpapers.length - 1, Math.max(0, i));
         float y = 10 + (25 * ((float) index / (wallpapers.length - 1)));
         scrollBar.y = (int) y;
+        update();
+        scrollContainer.update();
     }
 
     @Override
     public void paint(IGraphics graphics) {
-        Registry.HYPNOFONT_0N.drawCenteredString("WALLPAPER:", x + (width / 2), y - 10, Colors.TEXT_COLOR, graphics);
-        PositionedGraphics graphics1 = new PositionedGraphics(graphics, this);
-        graphics1.drawImage(Registry.BACKGROUND_SELECTOR, 0, 0, width, height);
-        graphics1.drawImage(wallpapers[index].icon, 2, 2, 120, 68);
-        scrollUp.paint(graphics1);
-        scrollDown.paint(graphics1);
-        scrollBar.paint(graphics1);
+        Registry.HYPNOFONT_0N.drawCenteredString("WALLPAPER:", width / 2, 0, Colors.TEXT_COLOR, graphics);
+        graphics.drawImage(Registry.BACKGROUND_SELECTOR, 0, 10, width, 72);
+        graphics.drawImage(wallpapers[index].icon, 2, 12, 120, 68);
+        scrollContainer.render(graphics);
     }
 
     @Override
     public boolean mousePressed(int mouseX, int mouseY) {
-        if (scrollUp.isInside(mouseX - x, mouseY - y))
-            selected = scrollUp;
-        else if (scrollDown.isInside(mouseX - x, mouseY - y))
-            selected = scrollDown;
-        else if (scrollBar.isInside(mouseX - x, mouseY - y))
-            selected = scrollBar;
-        if (selected != null)
-            return selected.mousePressed(mouseX - x, mouseY - y);
-        return false;
+        return scrollContainer.mousePressed(mouseX - scrollContainer.x, mouseY - scrollContainer.y);
     }
 
     @Override
     public boolean mouseReleased(int mouseX, int mouseY) {
-        boolean rv = false;
-        if (selected != null)
-            rv = selected.mouseReleased(mouseX - x, mouseY - y);
-        selected = null;
-        return rv;
+        return scrollContainer.mouseReleased(mouseX - scrollContainer.x, mouseY - scrollContainer.y);
     }
 
     @Override
     public boolean mouseDragged(int mouseX, int mouseY) {
-        if (selected != null)
-            return selected.mouseDragged(mouseX - x, mouseY - y);
-        return false;
+        return scrollContainer.mouseDragged(mouseX - scrollContainer.x, mouseY - scrollContainer.y);
     }
 
     @Override
@@ -86,18 +75,23 @@ public class WallpaperSelector extends Widget implements Clickable {
         return true;
     }
 
-    private class ScrollBar extends Widget implements Clickable {
+    @Override
+    public boolean isInside(int x, int y) {
+        return x >= this.getX() && x < this.getX() + width && y >= this.getY()+10 && y < this.getY() + height;
+    }
+
+    private class ScrollBar extends Container implements Clickable {
 
         int dragY;
 
-        public ScrollBar(int x, int y) {
-            super(x, y, 9, 27);
+        public ScrollBar(Widget parent, int x, int y) {
+            super(parent, x, y, 9, 27);
         }
 
         @Override
         public boolean mousePressed(int mouseX, int mouseY) {
-            dragY = mouseY - y;
-            return false;
+            dragY = mouseY;
+            return true;
         }
 
         @Override
@@ -107,7 +101,7 @@ public class WallpaperSelector extends Widget implements Clickable {
 
         @Override
         public boolean mouseDragged(int mouseX, int mouseY) {
-            int newY = Math.min(35, Math.max(10, mouseY - dragY));
+            int newY = Math.min(35, Math.max(10, y + (mouseY - dragY)));
             setIndex((int) ((wallpapers.length - 1f) * ((newY - 10f) / 25f)));
             return true;
         }
@@ -124,7 +118,7 @@ public class WallpaperSelector extends Widget implements Clickable {
 
         @Override
         public void paint(IGraphics graphics) {
-            graphics.drawImage(Registry.SCROLL_BAR, x, y, width, height);
+            graphics.drawImage(Registry.SCROLL_BAR, 0, 0, width, height);
         }
     }
 }

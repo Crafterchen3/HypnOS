@@ -30,11 +30,8 @@ public class Sound {
                     //set Volume
                     FloatControl clipVolume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                     float setVolume = (group.getVolume() / 100f) * (volume / 100f);
-                    float minVolume = clipVolume.getMinimum();
-                    float maxVolume = clipVolume.getMaximum();
-                    float gain = (maxVolume - minVolume) * setVolume + minVolume;
-                    clipVolume.setValue(gain);
-
+                    clipVolume.setValue(20f * (float) Math.log10(setVolume));
+                    clip.loop(0);
                     clip.start();
                 } catch (Exception e) {
                     throw new RuntimeException(e);

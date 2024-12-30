@@ -7,7 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/run" />
       <excludeFolder url="file://$MODULE_DIR$/run/logs" />
-      <excludeFolder url="file://$MODULE_DIR$/run/mods" />
+      <excludeFolder url="file://$MODULE_DIR$/run/apps" />
+      <excludeFolder url="file://$MODULE_DIR$/run2" />
+      <excludeFolder url="file://$MODULE_DIR$/modules" />
+      <excludeFolder url="file://$MODULE_DIR$/run3" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

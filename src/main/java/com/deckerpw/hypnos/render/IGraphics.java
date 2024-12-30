@@ -9,4 +9,5 @@ public interface IGraphics {
 
     void drawImage(BufferedImage image, int x, int y, int width, int height);
 
+    void fillRect(int x, int y, int width, int height, Color color);
 }

@@ -8,18 +8,18 @@ public class Image extends Widget {
 
     public BufferedImage image;
 
-    public Image(int x, int y, int width, int height, BufferedImage image) {
-        super(x, y, width, height);
+    public Image(Widget parent, int x, int y, int width, int height, BufferedImage image) {
+        super(parent, x, y, width, height);
         this.image = image;
     }
 
-    public Image(int x, int y, BufferedImage image) {
-        super(x, y, image.getWidth(), image.getHeight());
+    public Image(Widget parent, int x, int y, BufferedImage image) {
+        super(parent, x, y, image.getWidth(), image.getHeight());
         this.image = image;
     }
 
     @Override
     public void paint(IGraphics graphics) {
-        graphics.drawImage(image, x, y, width, height);
+        graphics.drawImage(image, 0, 0, width, height);
     }
 }

@@ -13,25 +13,30 @@ public class Checkbox extends Widget implements Clickable {
     private final BufferedImage[] images;
     private boolean state;
 
-    public Checkbox(int x, int y, Font font, String title, BufferedImage[] images, boolean state) {
-        super(x, y, 16, 16);
+    public Checkbox(Widget parent, int x, int y, Font font, String title, BufferedImage[] images, boolean state) {
+        super(parent, x, y, 16, 16);
         this.font = font;
         this.title = title;
         this.images = images;
         this.state = state;
+        int s = font.getLength(title);
+        this.width = 20 + s;
+        this.x -= s+4;
+    }
+
+    @Override
+    public boolean isInside(int x, int y) {
+        return x >= this.getX()+(width-16) && x < this.getX() + width && y >= this.getY() && y < this.getY() + height;
     }
 
     public boolean getState() {
         return state;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
-    }
-
     @Override
     public boolean mousePressed(int mouseX, int mouseY) {
         state = !state;
+        update();
         return true;
     }
 
@@ -57,8 +62,7 @@ public class Checkbox extends Widget implements Clickable {
 
     @Override
     public void paint(IGraphics graphics) {
-        int s = font.getLength(title);
-        font.drawString(title, x - 4 - s, y + 6, Colors.TEXT_COLOR, graphics);
-        graphics.drawImage(images[state ? 1 : 0], x, y, 16, 16);
+        font.drawString(title, 0, 6, Colors.TEXT_COLOR, graphics);
+        graphics.drawImage(images[state ? 1 : 0], width-16, 0, 16, 16);
     }
 }

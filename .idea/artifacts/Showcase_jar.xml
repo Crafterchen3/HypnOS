@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Showcase:jar">
+    <output-path>$PROJECT_DIR$/modules</output-path>
+    <root id="archive" name="Showcase.jar">
+      <element id="module-output" name="Showcase" />
+      <element id="module-source" name="Showcase" />
+    </root>
+  </artifact>
+</component>

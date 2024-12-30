@@ -3,22 +3,20 @@ package com.deckerpw.hypnos.ui.window;
 import com.deckerpw.hypnos.Registry;
 import com.deckerpw.hypnos.render.Font;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.render.PositionedGraphics;
-import com.deckerpw.hypnos.ui.Screen;
 import com.deckerpw.hypnos.ui.widget.Button;
 import com.deckerpw.hypnos.ui.widget.Clickable;
-import com.deckerpw.hypnos.ui.widget.Cursor;
 import com.deckerpw.hypnos.ui.widget.Widget;
+import com.deckerpw.hypnos.ui.widget.WindowManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class FileManagerWindow extends Window {
-    public FileManagerWindow(Screen screen, Cursor cursor) {
-        super(screen, Registry.FILES_PANE, 480 / 2 - (278 / 2), 270 / 2 - (160 / 2), 278, 160, cursor, "FILE MANAGER", Registry.FILE_MANAGER_ICON);
+public class FileManagerWindowDep extends Window {
+    public FileManagerWindowDep(WindowManager windowManager) {
+        super(windowManager, Registry.FILES_PANE, 480 / 2 - (278 / 2), 270 / 2 - (160 / 2), 278, 160, "FILE MANAGER", Registry.FILE_MANAGER_ICON);
         addWidget(new FileList());
-        addWidget(new Button(11, 143, 9, 9, new BufferedImage[]{
+        addWidget(new Button(this,11, 143, 9, 9, new BufferedImage[]{
                 Registry.NEW_FOLDER,
                 Registry.NEW_FOLDER
         }, () -> {
@@ -32,7 +30,7 @@ public class FileManagerWindow extends Window {
         private int scroll = 0;
 
         public FileList() {
-            super(9, 32, 252, 108);
+            super(FileManagerWindowDep.this,9, 32, 252, 108);
             addFile("test1", "2024.07.01");
             addFile("test2", "2024.07.01");
             addFile("test3", "2024.07.01");
@@ -77,10 +75,9 @@ public class FileManagerWindow extends Window {
         }
 
         @Override
-        public void paint(IGraphics g) {
-            PositionedGraphics graphics = new PositionedGraphics(g, this);
+        public void paint(IGraphics graphics) {
             for (int i = scroll; i < Math.min(8 + scroll, files.size()); i++) {
-                files.get(i).paint(graphics);
+                files.get(i).render(graphics);
             }
         }
 
@@ -100,7 +97,7 @@ public class FileManagerWindow extends Window {
             private final Color selectedColor = new Color(0xff9AEFFF);
 
             public File(int x, int y, int selected, String name, String date) {
-                super(x, y, 252, 15);
+                super(null,x, y, 252, 15);
                 this.selected = selected;
                 this.name = name;
                 this.date = date;

@@ -1,26 +1,42 @@
 package com.deckerpw.hypnos.render;
 
-import com.deckerpw.hypnos.HypnOS;
+import com.deckerpw.hypnos.swing.SwingWindow;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Graphics implements IGraphics {
 
-    public Graphics2D graphics2D;
+    private final BufferedImage cache = new BufferedImage(480,270,BufferedImage.TYPE_INT_ARGB);
+    private final SwingWindow bridge;
 
-    public Graphics(Graphics2D graphics2D) {
-        this.graphics2D = graphics2D;
+    public Graphics(SwingWindow bridge) {
+        this.bridge = bridge;
     }
 
     @Override
     public Graphics2D create(int x, int y, int width, int height) {
-        float size = HypnOS.size;
-        return (Graphics2D) graphics2D.create((int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size));
+        Graphics2D graphics2D = cache.createGraphics();
+        return (Graphics2D) graphics2D.create(x, y, width, height);
     }
 
     public void drawImage(BufferedImage image, int x, int y, int width, int height) {
-        float size = HypnOS.size;
-        graphics2D.drawImage(image, (int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size), null);
+        Graphics2D graphics2D = cache.createGraphics();
+        graphics2D.drawImage(image, x,y,width,height, null);
+    }
+
+    public void fillRect(int x, int y, int width, int height, Color color) {
+        Graphics2D graphics2D = cache.createGraphics();
+        graphics2D.setColor(color);
+        graphics2D.fillRect(x,y,width,height);
+    }
+
+    public void paint(Graphics2D graphics2D){
+        float scale = bridge.getScale();
+        graphics2D.drawImage(cache,0,0,(int)(scale*480),(int)(scale*270),null);
+    }
+
+    public BufferedImage getCache() {
+        return cache;
     }
 }

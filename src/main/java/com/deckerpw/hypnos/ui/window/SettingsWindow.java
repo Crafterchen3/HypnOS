@@ -1,14 +1,16 @@
 package com.deckerpw.hypnos.ui.window;
 
 import com.deckerpw.hypnos.Colors;
-import com.deckerpw.hypnos.HypnOS;
 import com.deckerpw.hypnos.Registry;
-import com.deckerpw.hypnos.Settings;
+import com.deckerpw.hypnos.config.UserConfig;
+import com.deckerpw.hypnos.machine.Machine;
+import com.deckerpw.hypnos.machine.User;
 import com.deckerpw.hypnos.render.IGraphics;
-import com.deckerpw.hypnos.ui.Screen;
+import com.deckerpw.hypnos.ui.target.Screen;
 import com.deckerpw.hypnos.ui.widget.Checkbox;
-import com.deckerpw.hypnos.ui.widget.Cursor;
 import com.deckerpw.hypnos.ui.widget.*;
+import com.deckerpw.hypnos.ui.widget.Label;
+import com.deckerpw.hypnos.util.Logger;
 import com.deckerpw.hypnos.util.SizeableImage;
 
 import javax.imageio.ImageIO;
@@ -20,24 +22,33 @@ import java.nio.file.Paths;
 
 public class SettingsWindow extends TabWindow {
 
+    private final Screen screen;
     private final Slider musicVolume;
     private final Slider sfxVolume;
     private final Checkbox mouseSFX;
     private final Checkbox keyboardSFX;
     private final SizeableImage win;
     private final SizeableImage win2;
-    private final EditBox width;
-    private final EditBox height;
+    private final EditBox widthBox;
+    private final EditBox heightBox;
+    private final EditBox usernameBox;
+    private final EditBox passwordBox;
     private final Checkbox autoLog;
     private final WallpaperSelector wallpaperSelector;
     private final Checkbox intro;
+    private final User user;
+    private final Logger logger;
 
-    public SettingsWindow(Screen screen, int x, int y, Cursor cursor) {
-        super(screen, Registry.WINDOW_PANE, x, y, 306, 164, cursor, "SETTINGS", Registry.SETTINGS_ICON, new String[]{
+    public SettingsWindow(Screen screen, int x, int y) {
+        super(screen.getWindowManager(), Registry.WINDOW_PANE, x, y, 306, 164, "SETTINGS", Registry.SETTINGS_ICON, new String[]{
                 "AUDIO",
                 "DEBUG",
-                "DISPLAY"
+                "DISPLAY",
+                "USER"
         });
+        this.screen = screen;
+        this.user = screen.getUser();
+        this.logger = screen.getMachine().getLogger();
         //(this.widgets.add(new TextBox(7,25,width-14,
         //        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
         //        font, Color.BLACK));
@@ -65,67 +76,83 @@ public class SettingsWindow extends TabWindow {
                 wind.getSubimage(41, 21, 5, 1),
                 new Color(0xFF9BC7F5)
         );
-        Settings settings = HypnOS.settings;
-        musicVolume = new Slider(8, 25, "MUSIC VOLUME", font, settings.jsonObject.getInt("music_volume"));
-        addWidget(musicVolume);
-        sfxVolume = new Slider(8, 60, "SOUND VOLUME", font, settings.jsonObject.getInt("sfx_volume"));
-        addWidget(sfxVolume);
-        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
-        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font));
-        keyboardSFX = new Checkbox(282, 28, font, "KEY SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("keyboard_sfx"));
-        addWidget(keyboardSFX);
-        mouseSFX = new Checkbox(282, 48, font, "MOUSE SFX", Registry.CHECKBOX, settings.jsonObject.getBoolean("mouse_sfx"));
-        addWidget(mouseSFX);
+        UserConfig userConfig = screen.getUser().getConfig();
+        musicVolume = new Slider(container, 8, 25, "MUSIC VOLUME", font, userConfig.getInt("music_volume"));
+        addWidgetSelectedTab(musicVolume);
+        sfxVolume = new Slider(container, 8, 60, "SOUND VOLUME", font, userConfig.getInt("sfx_volume"));
+        addWidgetSelectedTab(sfxVolume);
+        addWidgetSelectedTab(new TextButton(container, 198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font));
+        addWidgetSelectedTab(new TextButton(container, 251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font));
+        keyboardSFX = new Checkbox(container, 282, 28, font, "KEY SFX", Registry.CHECKBOX, userConfig.getBoolean("keyboard_sfx"));
+        addWidgetSelectedTab(keyboardSFX);
+        mouseSFX = new Checkbox(container, 282, 48, font, "MOUSE SFX", Registry.CHECKBOX, userConfig.getBoolean("mouse_sfx"));
+        addWidgetSelectedTab(mouseSFX);
         refreshCurrentTab();
-        width = new EditBox(11, 25, "WIDTH", font);
-        addWidget(width, 1);
-        height = new EditBox(11, 50, "HEIGHT", font);
-        addWidget(height, 1);
-        addWidget(new TextButton(11, 136, 47, 21, "OPEN", Registry.DEFAULT_BUTTON, () -> {
-            BufferedImage pane = win2.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
-            Window window = new Window(screen, pane, 20, 20, pane.getWidth(), pane.getHeight(), cursor, "TEST") {
+        widthBox = new EditBox(container, 11, 25, "WIDTH", font, EditBox.NUMBERS);
+        addWidgetSelectedTab(widthBox, 1);
+        heightBox = new EditBox(container, 11, 50, "HEIGHT", font, EditBox.NUMBERS);
+        addWidgetSelectedTab(heightBox, 1);
+        addWidgetSelectedTab(new TextButton(container, 11, 136, 47, 21, "OPEN", Registry.DEFAULT_BUTTON, () -> {
+            BufferedImage pane = win.genImage(Integer.parseInt(widthBox.getText()), Integer.parseInt(heightBox.getText()));
+            Window window = new Window(windowManager, pane, 20, 20, pane.getWidth(), pane.getHeight(), "TEST") {
                 @Override
-                public void paint(IGraphics g) {
-                    super.paint(g);
-                    font.drawString("X: " + x + ", Y:" + y, x + 20, y + 20, Colors.TEXT_COLOR, g);
+                public void paint(IGraphics graphics) {
+                    super.paint(graphics);
+                    font.drawString("X: " + x + ", Y:" + y, x + 20, y + 20, Colors.TEXT_COLOR, graphics);
                 }
             };
             screen.addWindow(window);
         }, font), 1);
-        addWidget(new TextButton(11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
-            BufferedImage pane = win2.genImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
-            File outputfile = new File(Paths.get(HypnOS.Path, "output.png").toString());
+        addWidgetSelectedTab(new TextButton(container, 11 + 53, 136, 47, 21, "SAVE", Registry.DEFAULT_BUTTON, () -> {
+            BufferedImage pane = win.genImage(Integer.parseInt(widthBox.getText()), Integer.parseInt(heightBox.getText()));
+            File outputfile = new File(Paths.get(screen.getMachine().getPath(), "output.png").toString());
             try {
                 ImageIO.write(pane, "png", outputfile);
-                HypnOS.logger.println("Written image to: " + outputfile.getPath());
+                logger.println("Written image to: " + outputfile.getPath());
             } catch (IOException e) {
-                HypnOS.logger.println("Failed to write image to: " + outputfile.getPath());
+                logger.println("Failed to write image to: " + outputfile.getPath());
             }
         }, font), 1);
-        autoLog = new Checkbox(282, 28, font, "AUTOSTART LOG", Registry.CHECKBOX, settings.jsonObject.getBoolean("autostart_log"));
-        addWidget(autoLog, 1);
-        intro = new Checkbox(282, 48, font, "SHOW INTRO", Registry.CHECKBOX, settings.jsonObject.getBoolean("intro"));
-        addWidget(intro, 1);
-        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 1);
-        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 1);
-        wallpaperSelector = new WallpaperSelector(306 / 2 - (133 / 2), 48, Registry.WALLPAPERS);
-        addWidget(wallpaperSelector, 2);
-        addWidget(new TextButton(198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 2);
-        addWidget(new TextButton(251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 2);
+        autoLog = new Checkbox(container, 282, 28, font, "AUTOSTART LOG", Registry.CHECKBOX, userConfig.getBoolean("autostart_log"));
+        addWidgetSelectedTab(autoLog, 1);
+        intro = new Checkbox(container, 282, 48, font, "SHOW INTRO", Registry.CHECKBOX, userConfig.getBoolean("intro"));
+        addWidgetSelectedTab(intro, 1);
+        addWidgetSelectedTab(new TextButton(container, 198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 1);
+        addWidgetSelectedTab(new TextButton(container, 251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 1);
+        wallpaperSelector = new WallpaperSelector(container, screen.getMachine(), 306 / 2 - (133 / 2), 48, Registry.WALLPAPERS);
+        addWidgetSelectedTab(wallpaperSelector, 2);
+        addWidgetSelectedTab(new TextButton(container, 198, 136, 47, 21, "APPLY", Registry.DEFAULT_BUTTON, this::ApplySettings, font), 2);
+        addWidgetSelectedTab(new TextButton(container, 251, 136, 47, 21, "CANCEL", Registry.DEFAULT_BUTTON, this::closeWindow, font), 2);
 
+        addWidgetSelectedTab(new Label(container, 11, 25, "*Be careful with these settings*", font, Colors.TEXT_COLOR), 3);
+        usernameBox = new EditBox(container, 11, 37, "USERNAME", font, EditBox.EVERYTHING);
+        usernameBox.setText(screen.getUser().getName());
+        addWidgetSelectedTab(usernameBox, 3);
+        addWidgetSelectedTab(new TextButton(container, 128, 35, 47, 21, "SET", Registry.DEFAULT_BUTTON, () -> {
+            Machine machine = screen.getMachine();
+            machine.setUserName(usernameBox.getText());
+        }, font), 3);
+        passwordBox = new PasswordBox(container, 11, 63, "PASSWORD", font, EditBox.EVERYTHING);
+        addWidgetSelectedTab(passwordBox, 3);
+        addWidgetSelectedTab(new TextButton(container, 128, 60, 47, 21, "SET", Registry.DEFAULT_BUTTON, () -> {
+            Machine machine = screen.getMachine();
+            machine.setPassword(passwordBox.getText());
+            passwordBox.setText("");
+        }, font), 3);
     }
 
     private void ApplySettings() {
-        Settings settings = HypnOS.settings;
-        settings.jsonObject.put("music_volume", musicVolume.getValue());
-        settings.jsonObject.put("sfx_volume", sfxVolume.getValue());
-        settings.updateVolume();
-        settings.jsonObject.put("keyboard_sfx", keyboardSFX.getState());
-        settings.jsonObject.put("mouse_sfx", mouseSFX.getState());
-        settings.jsonObject.put("autostart_log", autoLog.getState());
-        settings.jsonObject.put("wallpaper", wallpaperSelector.index);
-        screen.desktop.wallpaper = Registry.WALLPAPERS[settings.jsonObject.getInt("wallpaper")].wall;
-        settings.jsonObject.put("intro", intro.getState());
+        UserConfig userConfig = screen.getUser().getConfig();
+        userConfig.put("music_volume", musicVolume.getValue());
+        userConfig.put("sfx_volume", sfxVolume.getValue());
+        userConfig.updateVolume();
+        userConfig.put("keyboard_sfx", keyboardSFX.getState());
+        userConfig.put("mouse_sfx", mouseSFX.getState());
+        userConfig.put("autostart_log", autoLog.getState());
+        userConfig.put("wallpaper", wallpaperSelector.index);
+        screen.setWallpaper(Registry.WALLPAPERS[userConfig.getInt("wallpaper")].wall);
+        userConfig.put("intro", intro.getState());
+        userConfig.save();
     }
 
 }

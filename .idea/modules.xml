@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/FileManager/FileManager.iml" filepath="$PROJECT_DIR$/FileManager/FileManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/HypnOS.iml" filepath="$PROJECT_DIR$/HypnOS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Showcase/Showcase.iml" filepath="$PROJECT_DIR$/Showcase/Showcase.iml" />
     </modules>
   </component>
 </project>

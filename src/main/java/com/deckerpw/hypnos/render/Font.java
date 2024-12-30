@@ -17,7 +17,7 @@ public class Font {
     }
 
     public static Map<Character, Integer> genMap() {
-        characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:?!-_~#\"`&()[]|'\\/@°+=*<> ";
+        characters =    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:?!-_~#\"`&()[]|'\\/@°+=*<> ";
         String digits = "55555555455565555554566564654555552452655554545564555455555555223353666763734343366747774433";
 
         Map<Character, Integer> charToDigitMap = new TreeMap<Character, Integer>();
@@ -51,9 +51,11 @@ public class Font {
         int start = 0;
         for (int i = 0; i < string.length(); i++) {
             char ch = string.charAt(i);
-            int w = charmap.get(ch);
-            drawChar(ch, x + start, y, w, color, g);
-            start += w;
+            if (charmap.containsKey(ch)) {
+                int w = charmap.get(ch);
+                drawChar(ch, x + start, y, w, color, g);
+                start += w;
+            }
         }
     }
 
@@ -88,8 +90,10 @@ public class Font {
         int width = 0;
         for (int i = 0; i < string.length(); i++) {
             char ch = string.charAt(i);
-            int w = charmap.get(ch);
-            width += w;
+            if (charmap.containsKey(ch)) {
+                int w = charmap.get(ch);
+                width += w;
+            }
         }
         return width;
     }

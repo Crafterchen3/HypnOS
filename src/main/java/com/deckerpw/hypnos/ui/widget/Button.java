@@ -10,20 +10,22 @@ public class Button extends Widget implements Clickable {
     private final BufferedImage[] images;
     protected int state;
 
-    public Button(int x, int y, int width, int height, BufferedImage[] images, Runnable runnable) {
-        super(x, y, width, height);
+    public Button(Widget parent, int x, int y, int width, int height, BufferedImage[] images, Runnable runnable) {
+        super(parent, x, y, width, height);
         this.runnable = runnable;
         this.images = images;
     }
 
     public boolean mousePressed(int mouseX, int mouseY) {
         state = 1;
+        update();
         return true;
     }
 
     public boolean mouseReleased(int mouseX, int mouseY) {
         if (state == 1) {
             state = 0;
+            update();
             runnable.run();
         }
         return true;
@@ -46,6 +48,6 @@ public class Button extends Widget implements Clickable {
 
     @Override
     public void paint(IGraphics graphics) {
-        graphics.drawImage(images[state], x, y, width, height);
+        graphics.drawImage(images[state], 0, 0, width, height);
     }
 }
